@@ -220,7 +220,7 @@ function translateActiveShape(x, y, isGameLoop)
     var proposedY = activeShape.currY + y;
 
     if (proposedX < 0 || proposedX + activeShape.width() - 1 >= DIMENSION_X  ||
-        proposedY < 0 || proposedY + activeShape.height() - 1>= extentY) return;
+        proposedY < 0 || proposedY + activeShape.height() - 1 >= extentY) return;
 
     if (isGameLoop && isActiveShapeSettled()) return;
 
@@ -230,6 +230,41 @@ function translateActiveShape(x, y, isGameLoop)
     activeShape.currX += x;
     activeShape.currY += y;
     activeShape.draw();
+}
+
+var timeout;
+
+function drop()
+{
+    var currMin = extentY + 1000;
+
+    for (var x = 0; x < activeShape.width(); x++)
+    {
+        for (var y = activeShape.height() - 1; y >= 0; y--)
+        {
+            if (activeShape.definition[y][x])
+            {
+                var colMax;
+                for (var boardY = activeShape.currY + y + 1; boardY < extentY; boardY++)
+                {
+                    // console.log(gameBoard[24][5]);
+                    // console.log("boardY: %d, activeShape.currX + x: %d, filled: %s", boardY, activeShape.currX + x, gameBoard[boardY][activeShape.currX + x].colour);
+                    if (gameBoard[boardY][activeShape.currX + x].filled)
+                    {
+                        colMax = boardY - (activeShape.currY + y) - 1;
+                        console.log("colMax: %d", colMax);
+                        break;
+                    }
+                    colMax = extentY - activeShape.currY - activeShape.height();
+                }
+                currMin = Math.min(currMin, colMax);
+                break;
+            }
+        }
+    }
+    translateActiveShape(0, currMin);
+    clearTimeout(timeout);
+    gameLoop();
 }
 
 function cleanBoardView(x)
@@ -383,7 +418,7 @@ function gameLoop()
 
     translateActiveShape(0, 1, true);
     
-    setTimeout(gameLoop, currSpeed);
+    timeout = setTimeout(gameLoop, currSpeed);
 }
 
 function setupBindings()
@@ -404,6 +439,9 @@ function setupBindings()
             case 40: // Down
                 translateActiveShape(0, 1);
                 break;
+            case 32: // Space bar
+                drop();
+                break;
             default:
                 return;
         }
@@ -412,7 +450,7 @@ function setupBindings()
 
     $(document).dblclick(function(e)
     {
-        // Drop
+        drop()
     });
 
     $(document).mousedown(function(e)
