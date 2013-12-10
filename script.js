@@ -222,7 +222,7 @@ function translateActiveShape(x, y, isGameLoop)
     if (proposedX < 0 || proposedX + activeShape.width() - 1 >= DIMENSION_X  ||
         proposedY < 0 || proposedY + activeShape.height() - 1 >= extentY) return;
 
-    if (isGameLoop && isActiveShapeSettled()) return;
+    if (!isGameLoop && isActiveShapeSettled()) return;
 
     if (x != 0 && isActiveShapeBlocked(x > 0 ? BLOCKED_RIGHT : BLOCKED_LEFT)) return;
 
@@ -421,23 +421,46 @@ function gameLoop()
     timeout = setTimeout(gameLoop, currSpeed);
 }
 
+function moveLeft()
+{
+    translateActiveShape(-1, 0);
+}
+
+function moveRight()
+{
+    translateActiveShape(1, 0);
+}
+
+function rotate()
+{
+    rotateActiveShape(270);
+}
+
+function moveDown()
+{
+    translateActiveShape(0, 1);
+}
+
 function setupBindings()
 {
     $(document).keydown(function(e)
     {
         switch(e.which)
         {
-            case 37: // Left
-                translateActiveShape(-1, 0);
+            case 37: // Left arrow key
+                moveLeft();
                 break;
-            case 38: // Up
-                rotateActiveShape(270);
+            case 38: // Up arrow key
+                rotate();
                 break;
-            case 39: // Right
-                translateActiveShape(1, 0);
+            case 39: // Right arrow key
+                moveRight();
                 break;
-            case 40: // Down
-                translateActiveShape(0, 1);
+            case 40: // Down arrow key
+                moveDown();
+                break;
+            case 32: // Space bar
+                drop();
                 break;
             case 32: // Space bar
                 drop();
@@ -448,22 +471,51 @@ function setupBindings()
         e.preventDefault();
     });
 
-    $(document).dblclick(function(e)
-    {
-        drop()
+    // var initX = e.pageX;
+    // var initY = e.pageY;
+    // $(document).mousemove(function(e)
+    // {
+    //     var xDelta = initX - e.pageX;
+    //     if (Math.abs(xDelta) > blockSize) xDelta > 0 ? moveLeft() : moveRight();
+    //     e.preventDefault();
+    // });
+    // e.preventDefault();
+
+
+    var hammertime = $("#iTetris").hammer()
+
+    hammertime.on("swipedown", function(e) {
+        drop();
+        e.preventDefault();
     });
 
-    $(document).mousedown(function(e)
-    {
-        $(document).mousemove(function(e)
-        {
-
-        });
+    hammertime.on("swipeup", function(e) {
+        rotate();
+        e.preventDefault();
     });
 
-    $(document).mouseup(function(e)
-    {
-        $(document).unbind("mousemove");
+    hammertime.on("dragleft", function(e) {
+        moveLeft();
+        e.preventDefault();
+    });
+
+    hammertime.on("dragright", function(e) {
+        moveRight();
+        e.preventDefault();
+    });
+
+    hammertime.on("dragdown", function(e) {
+        moveDown();
+        e.preventDefault();
+    });
+
+    hammertime.on("tap doubletap", function(e) {
+        moveDown();
+        e.preventDefault();
+    });
+
+    hammertime.on("touchmove", function(e) {
+        e.preventDefault();
     });
 }
 
