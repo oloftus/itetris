@@ -218,9 +218,8 @@ function translateActiveShape(x, y, isGameLoop)
     var proposedY = activeShape.currY + y;
 
     if (proposedX < 0 || proposedX + activeShape.width() - 1 >= DIMENSION_X  ||
-        proposedY < 0 || proposedY + activeShape.height() - 1 >= extentY) return;
-
-    if (!isGameLoop && isActiveShapeSettled()) return;
+        proposedY < 0 || proposedY + activeShape.height() - 1 >= extentY ||
+        (y && isActiveShapeSettled())) return;
 
     if (x != 0 && isActiveShapeBlocked(x > 0 ? BLOCKED_RIGHT : BLOCKED_LEFT)) return;
 
