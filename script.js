@@ -506,16 +506,20 @@ function setupBindings()
     });
 
     var distanceMoved;
+    var distanceMovedY;
     var initPos;
     var lastDelta;
     var goingLeft;
+    var initPosY;
 
     function initDragParams()
     {
         distanceMoved = 0;
+        distanceMovedY = 0;
         initPos = 0;
         lastDelta = 0;
         goingLeft = false;
+        initPosY = 0;
     }
 
     initDragParams();
@@ -534,7 +538,7 @@ function setupBindings()
         }
 
         var toMove = Math.abs(deltaX - initPos) - distanceMoved * blockSize;
-        if (toMove > blockSize)
+        if (toMove >= blockSize)
         {
             if (goingLeft) moveLeft();
             else moveRight();
@@ -547,20 +551,15 @@ function setupBindings()
 
     hammertime.on("dragend", initDragParams);
 
-    // var movedRight = 0;
-    // hammertime.on("dragright", function(e) {
-    //     var toMove = Math.abs(e.gesture.deltaX) - movedRight * blockSize;
-    //     if (toMove > blockSize)
-    //     {
-    //         moveRight();
-    //         movedRight++;
-    //     }
-
-    //     e.preventDefault();
-    // });
 
     hammertime.on("dragdown", function(e) {
-        moveDown();
+        var deltaY = e.gesture.deltaY;
+        var toMove = Math.abs(deltaY - initPosY) - distanceMovedY * blockSize;
+        if (toMove >= blockSize)
+        {
+            moveDown();
+            distanceMovedY++;
+        }
         e.preventDefault();
     });
 
