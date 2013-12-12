@@ -1,4 +1,3 @@
 body{margin:0;background-color:#444444;overflow:hidden;}
-#iTetris{margin-top:20pt;}
 #gameBoard{margin:0 auto;height:100%;background-color:#FFFACD;}
 .block{float:left;margin-top:0px;}
