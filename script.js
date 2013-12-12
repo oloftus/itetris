@@ -5,8 +5,6 @@ var DIMENSION_X = 10; //blocks
 var DIMENSION_Y = 20; //blocks
 var GAME_SPEED = 1000; //millliseconds
 
-// var blockSize; = 30; //px
-
 /********************/
 
 var BOARD_COLOUR = "transparent"
@@ -247,12 +245,9 @@ function drop()
                 var colMax;
                 for (var boardY = activeShape.currY + y + 1; boardY < extentY; boardY++)
                 {
-                    // console.log(gameBoard[24][5]);
-                    // console.log("boardY: %d, activeShape.currX + x: %d, filled: %s", boardY, activeShape.currX + x, gameBoard[boardY][activeShape.currX + x].colour);
                     if (gameBoard[boardY][activeShape.currX + x].filled)
                     {
                         colMax = boardY - (activeShape.currY + y) - 1;
-                        console.log("colMax: %d", colMax);
                         break;
                     }
                     colMax = extentY - activeShape.currY - activeShape.height();
@@ -267,19 +262,17 @@ function drop()
     gameLoop();
 }
 
-function cleanBoardView(x)
+// The gameboard as if the active block was not there (0s)
+function cleanBoardView(x, y)
 {
-    return function(y)
+    if ((activeShape.currX <= x) && (x < activeShape.currX + activeShape.width()) &&
+        (activeShape.currY <= y) && (y < activeShape.currY + activeShape.height()))
     {
-        if ((activeShape.currX <= x) && (x < activeShape.currX + activeShape.width()) &&
-            (activeShape.currY <= y) && (y < activeShape.currY + activeShape.height()))
-        {
-            var shapeIndexX = x - activeShape.currX;
-            var shapeIndexY = y - activeShape.currY;
-            return activeShape.definition[shapeIndexY][shapeIndexX] ^ gameBoard[y][x].filled;
-        }
-        else return gameBoard[y][x].filled;
+        var shapeIndexX = x - activeShape.currX;
+        var shapeIndexY = y - activeShape.currY;
+        return activeShape.definition[shapeIndexY][shapeIndexX] ^ gameBoard[y][x].filled;
     }
+    else return gameBoard[y][x].filled;
 }
 
 function rotateActiveShape(angle)
@@ -294,7 +287,7 @@ function rotateActiveShape(angle)
     {
         for (var x = 0; x < proposedShape.width(); x++)
         {
-            if (cleanBoardView(activeShape.currX + x)(activeShape.currY + y) &&
+            if (cleanBoardView(activeShape.currX + x, activeShape.currY + y) &&
                 proposedShape.definition[y][x]) return;
         }
     }
@@ -385,6 +378,37 @@ function addRandomShape()
     }
 }
 
+function completeRows()
+{
+    var completedRows = [];
+    for (var y = extentY - 1 ; y >= 0 ; y--)
+    {
+        for (var x = 0; x < DIMENSION_X; x++)
+        {
+            if (!cleanBoardView(x, y))
+            {
+                completedRows[y] = 0;
+                break;
+            }
+            if (x == DIMENSION_X - 1) completedRows[y] = 1;
+        }
+
+        if (completedRows[y])
+        {
+            for (var iy = y; iy >= 0 ; iy--)
+            {
+                for (var x = 0; x < DIMENSION_X; x++)
+                {
+                    var block = gameBoard[iy][x];
+                    block.filled = iy === 0 ? false : cleanBoardView(x, iy - 1);
+                    block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : "transparent"; // Really need to make cleanBoardView return blocks not boolean
+                    block.render();
+                }
+            }
+        }
+    }
+}
+
 function doGameOver()
 {
     //alert("GAME OVER SUCKER!");
@@ -417,7 +441,8 @@ function gameLoop()
     }
 
     translateActiveShape(0, 1, true);
-    
+    completeRows();
+
     timeout = setTimeout(gameLoop, currSpeed);
 }
 
