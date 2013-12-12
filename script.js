@@ -486,24 +486,11 @@ function setupBindings()
             case 32: // Space bar
                 drop();
                 break;
-            case 32: // Space bar
-                drop();
-                break;
             default:
                 return;
         }
         e.preventDefault();
     });
-
-    // var initX = e.pageX;
-    // var initY = e.pageY;
-    // $(document).mousemove(function(e)
-    // {
-    //     var xDelta = initX - e.pageX;
-    //     if (Math.abs(xDelta) > blockSize) xDelta > 0 ? moveLeft() : moveRight();
-    //     e.preventDefault();
-    // });
-    // e.preventDefault();
 
 
     var hammertime = $("#iTetris").hammer()
@@ -518,26 +505,66 @@ function setupBindings()
         e.preventDefault();
     });
 
-    hammertime.on("dragleft", function(e) {
-        moveLeft();
+    var distanceMoved;
+    var initPos;
+    var lastDelta;
+    var goingLeft;
+
+    function initDragParams()
+    {
+        distanceMoved = 0;
+        initPos = 0;
+        lastDelta = 0;
+        goingLeft = false;
+    }
+
+    initDragParams();
+
+    hammertime.on("drag", function(e) {
+        var deltaX = e.gesture.deltaX;
+
+        if (deltaX < initPos) goingLeft = true;
+
+        if (Math.abs(deltaX - initPos) <= lastDelta)
+        {
+            console.log("changing");
+            goingLeft = !goingLeft;
+            initPos = deltaX;
+            distanceMoved = 0;
+        }
+
+        var toMove = Math.abs(deltaX - initPos) - distanceMoved * blockSize;
+        if (toMove > blockSize)
+        {
+            if (goingLeft) moveLeft();
+            else moveRight();
+            distanceMoved++;
+        }
+        lastDelta = Math.abs(deltaX - initPos);
+
         e.preventDefault();
     });
 
-    hammertime.on("dragright", function(e) {
-        moveRight();
-        e.preventDefault();
-    });
+    hammertime.on("dragend", initDragParams);
+
+    // var movedRight = 0;
+    // hammertime.on("dragright", function(e) {
+    //     var toMove = Math.abs(e.gesture.deltaX) - movedRight * blockSize;
+    //     if (toMove > blockSize)
+    //     {
+    //         moveRight();
+    //         movedRight++;
+    //     }
+
+    //     e.preventDefault();
+    // });
 
     hammertime.on("dragdown", function(e) {
         moveDown();
         e.preventDefault();
     });
 
-    hammertime.on("tap doubletap", function(e) {
-        moveDown();
-        e.preventDefault();
-    });
-
+    // Stop panning viewport up and down
     hammertime.on("touchmove", function(e) {
         e.preventDefault();
     });
