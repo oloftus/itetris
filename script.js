@@ -49,36 +49,36 @@ var shapeProto =
         console.log(drawing);
     },
 
-    draw: function()
+    each: function(func)
     {
         var rows = this.definition;
         _.each(rows, _.bind(function(row, y)
         {
             _.each(row, _.bind(function(blockDef, x)
             {
-                var gameBlock = gameBoard[this.currY + y][this.currX + x];
-
-                gameBlock.filled = blockDef | gameBlock.filled;
-                gameBlock.colour = blockDef ? this.colour : gameBlock.colour;
-                gameBlock.render();
+                _.bind(func, this)(x, y, blockDef);
             }, this));
         }, this));
     },
 
+    draw: function()
+    {
+        this.each(function(x, y, blockDef) {
+            var gameBlock = gameBoard[this.currY + y][this.currX + x];
+            gameBlock.filled = blockDef | gameBlock.filled;
+            gameBlock.colour = blockDef ? this.colour : gameBlock.colour;
+            gameBlock.render();
+        });
+    },
+
     clear: function()
     {
-        var rows = this.definition;
-        _.each(rows, _.bind(function(row, y)
-        {
-            _.each(row, _.bind(function(blockDef, x)
-            {
-                var gameBlock = gameBoard[this.currY + y][this.currX + x];
-                
-                gameBlock.filled = blockDef ? false : gameBlock.filled;
-                gameBlock.colour = blockDef ? config.BOARD_COLOUR : gameBlock.colour;
-                gameBlock.render();
-            }, this));
-        }, this));
+        this.each(function(x, y, blockDef) {
+            var gameBlock = gameBoard[this.currY + y][this.currX + x];
+            gameBlock.filled = blockDef ? false : gameBlock.filled;
+            gameBlock.colour = blockDef ? config.BOARD_COLOUR : gameBlock.colour;
+            gameBlock.render();
+        });
     }
 }
 
