@@ -28,7 +28,6 @@ var loopPosition = 0;
 var activeShape;
 var currSpeed = config.GAME_SPEED;
 var gameBoard = [];
-var $gameBoard;
 var timeout;
 
 var shapeProto =
@@ -41,9 +40,9 @@ var shapeProto =
         var drawing = "";
         _.each(this.definition, function(row)
         {
-            _.each(row, function(block)
+            _.each(row, function(blockDef)
             {
-                drawing += block ? "X" : " ";
+                drawing += blockDef ? "X" : " ";
             });
             drawing += "\n";
         });
@@ -52,33 +51,34 @@ var shapeProto =
 
     draw: function()
     {
-        for (var y = 0; y < this.height(); y++)
+        var rows = this.definition;
+        _.each(rows, _.bind(function(row, y)
         {
-            for (var x = 0; x < this.width(); x++)
+            _.each(row, _.bind(function(blockDef, x)
             {
-                var block = gameBoard[this.currY + y][this.currX + x];
-                block.filled = this.definition[y][x] | block.filled;
-                block.colour = this.definition[y][x] ? this.colour : block.colour;
-                block.render();
-            }
-        }
+                var gameBlock = gameBoard[this.currY + y][this.currX + x];
+
+                gameBlock.filled = blockDef | gameBlock.filled;
+                gameBlock.colour = blockDef ? this.colour : gameBlock.colour;
+                gameBlock.render();
+            }, this));
+        }, this));
     },
 
     clear: function()
     {
-        for (var y = 0; y < this.height(); y++)
+        var rows = this.definition;
+        _.each(rows, _.bind(function(row, y)
         {
-            for (var x = 0; x < this.width(); x++)
+            _.each(row, _.bind(function(blockDef, x)
             {
-                var block = gameBoard[this.currY + y][this.currX + x];
-                if (this.definition[y][x])
-                {
-                    block.filled = false;
-                    block.colour = config.BOARD_COLOUR;
-                }
-                block.render();
-            }
-        }
+                var gameBlock = gameBoard[this.currY + y][this.currX + x];
+                
+                gameBlock.filled = blockDef ? false : gameBlock.filled;
+                gameBlock.colour = blockDef ? config.BOARD_COLOUR : gameBlock.colour;
+                gameBlock.render();
+            }, this));
+        }, this));
     }
 }
 
@@ -305,7 +305,7 @@ function rotateActiveShape(angle)
 
 function drawGameBoard()
 {
-    $gameBoard = $("<div id='gameBoard' />");
+    var $gameBoard = $("<div id='gameBoard' />");
     $gameBoard.css("width", config.DIMENSION_X * config.BLOCK_SIZE);
     $gameBoard.css("height", (config.DIMENSION_Y) * config.BLOCK_SIZE);
     $("#iTetris").append($gameBoard);
