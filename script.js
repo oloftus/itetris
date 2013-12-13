@@ -1,23 +1,41 @@
 /********************
     CONFIGURATION   */
 
-var DIMENSION_X = 10; //blocks
-var DIMENSION_Y = 20; //blocks
-var GAME_SPEED = 1000; //millliseconds
+config =
+{
+    DIMENSION_X: 10, //blocks
+    DIMENSION_Y: 20, //blocks
+    GAME_SPEED: 1000 //millliseconds
+}
 
 /********************/
 
-var BOARD_COLOUR = "transparent"
-var HIDDEN_ROWS = 5;
-var extentY = DIMENSION_Y + HIDDEN_ROWS;
-$(function(){ // Dynamic block size
-    blockSize = Math.floor(Math.min($(document).width() / DIMENSION_X, $(document).height() / DIMENSION_Y) - 1);
+config.BOARD_COLOUR = "transparent"
+config.HIDDEN_ROWS = 5;
+config.EXTENT_Y = config.DIMENSION_Y + config.HIDDEN_ROWS;
+$(function(){
+    config.BLOCK_SIZE = Math.floor(Math.min($(document).width() / config.DIMENSION_X, $(document).height() / config.DIMENSION_Y) - 1);
 });
+
+var BLOCKED = 
+{
+    LEFT: "left",
+    RIGHT: "right"
+}
+
+var isNewGame = true;
+var loopPosition = 0;
+var activeShape;
+var currSpeed = config.GAME_SPEED;
+var gameBoard = [];
+var $gameBoard;
+var timeout;
 
 var shapeProto =
 {
     width: function() { return this.definition[0].length; },
     height: function() { return this.definition.length; },
+
     visualise: function()
     {
         var drawing = "";
@@ -31,35 +49,34 @@ var shapeProto =
         });
         console.log(drawing);
     },
-    draw: function(shape)
+
+    draw: function()
     {
-        for (var i = 0; i < this.height(); i++)
+        for (var y = 0; y < this.height(); y++)
         {
-            for (var j = 0; j < this.width(); j++)
+            for (var x = 0; x < this.width(); x++)
             {
-                var block = gameBoard[this.currY + i][this.currX + j]
-                block.filled = this.definition[i][j] | block.filled;
-                if (this.definition[i][j])
-                {
-                    block.colour = this.colour;
-                    block.render();
-                }
+                var block = gameBoard[this.currY + y][this.currX + x];
+                block.filled = this.definition[y][x] | block.filled;
+                block.colour = this.definition[y][x] ? this.colour : block.colour;
+                block.render();
             }
         }
     },
+
     clear: function()
     {
-        for (var i = 0; i < this.height(); i++)
+        for (var y = 0; y < this.height(); y++)
         {
-            for (var j = 0; j < this.width(); j++)
+            for (var x = 0; x < this.width(); x++)
             {
-                var block = gameBoard[this.currY + i][this.currX + j];
-                if (this.definition[i][j])
+                var block = gameBoard[this.currY + y][this.currX + x];
+                if (this.definition[y][x])
                 {
                     block.filled = false;
-                    block.colour = BOARD_COLOUR;
-                    block.render();
+                    block.colour = config.BOARD_COLOUR;
                 }
+                block.render();
             }
         }
     }
@@ -135,7 +152,7 @@ function rotateShape(shape, angle)
     var rotShapeWidth = angle === 180 ? shape.width() : shape.height();
     var rotShapeHeight = angle === 180 ? shape.height() : shape.width();
     
-    for (var i=0; i<rotShapeHeight; i++)
+    for (var i = 0; i < rotShapeHeight; i++)
     {
         rotShapeDef[i] = [];
     }
@@ -164,24 +181,16 @@ function rotateShape(shape, angle)
     return shape;
 }
 
-var activeShape;
-var currSpeed = GAME_SPEED;
-var gameBoard = [];
-var $gameBoard;
-
 function blockHidden()
 {
-    return activeShape.currY + activeShape.height() - 1 < HIDDEN_ROWS;
+    return activeShape.currY + activeShape.height() - 1 < config.HIDDEN_ROWS;
 }
-
-var BLOCKED_RIGHT = 1;
-var BLOCKED_LEFT = -1;
 
 function isActiveShapeBlocked(side) // REM SIDE
 {
     for (var y = activeShape.height() - 1; y >= 0; y--)
     {
-        if (side == BLOCKED_LEFT)
+        if (side == BLOCKED.LEFT)
         {
             for (var x = 0; x < activeShape.width(); x++)
             {
@@ -217,11 +226,11 @@ function translateActiveShape(x, y, isGameLoop)
     var proposedX = activeShape.currX + x;
     var proposedY = activeShape.currY + y;
 
-    if (proposedX < 0 || proposedX + activeShape.width() - 1 >= DIMENSION_X  ||
-        proposedY < 0 || proposedY + activeShape.height() - 1 >= extentY ||
+    if (proposedX < 0 || proposedX + activeShape.width() - 1 >= config.DIMENSION_X  ||
+        proposedY < 0 || proposedY + activeShape.height() - 1 >= config.EXTENT_Y ||
         (y && isActiveShapeSettled())) return;
 
-    if (x != 0 && isActiveShapeBlocked(x > 0 ? BLOCKED_RIGHT : BLOCKED_LEFT)) return;
+    if (x != 0 && isActiveShapeBlocked(x > 0 ? BLOCKED.RIGHT : BLOCKED.LEFT)) return;
 
     activeShape.clear();
     activeShape.currX += x;
@@ -229,11 +238,9 @@ function translateActiveShape(x, y, isGameLoop)
     activeShape.draw();
 }
 
-var timeout;
-
 function drop()
 {
-    var currMin = extentY + 1000;
+    var currMin = config.EXTENT_Y + 1000;
 
     for (var x = 0; x < activeShape.width(); x++)
     {
@@ -242,14 +249,14 @@ function drop()
             if (activeShape.definition[y][x])
             {
                 var colMax;
-                for (var boardY = activeShape.currY + y + 1; boardY < extentY; boardY++)
+                for (var boardY = activeShape.currY + y + 1; boardY < config.EXTENT_Y; boardY++)
                 {
                     if (gameBoard[boardY][activeShape.currX + x].filled)
                     {
                         colMax = boardY - (activeShape.currY + y) - 1;
                         break;
                     }
-                    colMax = extentY - activeShape.currY - activeShape.height();
+                    colMax = config.EXTENT_Y - activeShape.currY - activeShape.height();
                 }
                 currMin = Math.min(currMin, colMax);
                 break;
@@ -279,8 +286,8 @@ function rotateActiveShape(angle)
     if (blockHidden()) return;
 
     var proposedShape = rotateShape(activeShape, angle);
-    if (activeShape.currX + proposedShape.width() > DIMENSION_X ||
-        activeShape.currY + proposedShape.height() > extentY) return;
+    if (activeShape.currX + proposedShape.width() > config.DIMENSION_X ||
+        activeShape.currY + proposedShape.height() > config.EXTENT_Y) return;
 
     for (var y = 0; y < proposedShape.height(); y++)
     {
@@ -296,27 +303,27 @@ function rotateActiveShape(angle)
     activeShape.draw();
 }
 
-function drawBoard()
+function drawGameBoard()
 {
     $gameBoard = $("<div id='gameBoard' />");
-    $gameBoard.css("width", DIMENSION_X * blockSize);
-    $gameBoard.css("height", (DIMENSION_Y) * blockSize);
+    $gameBoard.css("width", config.DIMENSION_X * config.BLOCK_SIZE);
+    $gameBoard.css("height", (config.DIMENSION_Y) * config.BLOCK_SIZE);
     $("#iTetris").append($gameBoard);
 
-    for (var y = 0; y < extentY; y++)
+    for (var y = 0; y < config.EXTENT_Y; y++)
     {
         gameBoard[y] = [];
-        for (var x = 0; x < DIMENSION_X; x++)
+        for (var x = 0; x < config.DIMENSION_X; x++)
         {
             var block = gameBoard[y][x] = _.extend(
                 {
                     filled: false,
-                    colour: BOARD_COLOUR,
+                    colour: config.BOARD_COLOUR,
                     $elem: $("<div class='block' />"),
                 }, blockProto);
-            block.$elem.css("width", blockSize);
-            block.$elem.css("height", blockSize);
-            if (y < HIDDEN_ROWS) block.$elem.hide();
+            block.$elem.css("width", config.BLOCK_SIZE);
+            block.$elem.css("height", config.BLOCK_SIZE);
+            if (y < config.HIDDEN_ROWS) block.$elem.hide();
             $gameBoard.append(block.$elem);
             block.render();
         }
@@ -325,7 +332,7 @@ function drawBoard()
 
 function isBlockSettled(x, y)
 {
-    return (y >= extentY - 1 || gameBoard[y + 1][x].filled);
+    return (y >= config.EXTENT_Y - 1 || gameBoard[y + 1][x].filled);
 }
 
 function isActiveShapeSettled()
@@ -356,8 +363,8 @@ function newRandomShape()
 function addRandomShape()
 {
     activeShape = newRandomShape();
-    var startX = Math.floor((DIMENSION_X - activeShape.width()) / 2);
-    var startY = HIDDEN_ROWS - activeShape.height() - 1;
+    var startX = Math.floor((config.DIMENSION_X - activeShape.width()) / 2);
+    var startY = config.HIDDEN_ROWS - activeShape.height() - 1;
 
     activeShape.currX = startX;
     activeShape.currY = startY;
@@ -380,23 +387,23 @@ function addRandomShape()
 function completeRows()
 {
     var completedRows = [];
-    for (var y = extentY - 1 ; y >= 0 ; y--)
+    for (var y = config.EXTENT_Y - 1 ; y >= 0 ; y--)
     {
-        for (var x = 0; x < DIMENSION_X; x++)
+        for (var x = 0; x < config.DIMENSION_X; x++)
         {
             if (!cleanBoardView(x, y))
             {
                 completedRows[y] = 0;
                 break;
             }
-            if (x == DIMENSION_X - 1) completedRows[y] = 1;
+            if (x == config.DIMENSION_X - 1) completedRows[y] = 1;
         }
 
         if (completedRows[y])
         {
             for (var iy = y; iy >= 0 ; iy--)
             {
-                for (var x = 0; x < DIMENSION_X; x++)
+                for (var x = 0; x < config.DIMENSION_X; x++)
                 {
                     var block = gameBoard[iy][x];
                     block.filled = iy === 0 ? false : cleanBoardView(x, iy - 1);
@@ -416,21 +423,18 @@ function doGameOver()
 function isGameOver()
 {
     var gameOver = false;
-    _.each(gameBoard[HIDDEN_ROWS - 1], function(block)
+    _.each(gameBoard[config.HIDDEN_ROWS - 1], function(block)
     {
         if (block.filled) gameOver = true;
     });
     return gameOver;
 }
 
-var newGame = true;
-var loopPosition = 0;
-
 function gameLoop()
 {
-    if (newGame || isActiveShapeSettled())
+    if (isNewGame || isActiveShapeSettled())
     {
-        newGame = false;
+        isNewGame = false;
         if (isGameOver())
         {
             doGameOver();
@@ -465,7 +469,7 @@ function moveDown()
     translateActiveShape(0, 1);
 }
 
-function setupBindings()
+function setupKeyBindings()
 {
     $(document).keydown(function(e)
     {
@@ -491,9 +495,36 @@ function setupBindings()
         }
         e.preventDefault();
     });
+}
 
-
+function setupTouchBindings()
+{
     var hammertime = $("#iTetris").hammer()
+
+    var DIRECTION =
+    {
+        LEFT: "left",
+        RIGHT: "Right"
+    }
+
+    var blocksMovedX;
+    var blocksMovedY;
+    var initPosX;
+    var initPosY;
+    var lastDeltaX;
+    var direction;
+
+    function initDragParams()
+    {
+        blocksMovedX = 0;
+        blocksMovedY = 0;
+        initPosX = 0;
+        initPosY = 0;
+        lastDeltaX = 0;
+    }
+
+    hammertime.on("dragend", initDragParams);
+    initDragParams();
 
     hammertime.on("swipedown", function(e) {
         drop();
@@ -505,65 +536,51 @@ function setupBindings()
         e.preventDefault();
     });
 
-    var distanceMoved;
-    var distanceMovedY;
-    var initPos;
-    var lastDelta;
-    var goingLeft;
-    var initPosY;
-
-    function initDragParams()
-    {
-        distanceMoved = 0;
-        distanceMovedY = 0;
-        initPos = 0;
-        lastDelta = 0;
-        goingLeft = false;
-        initPosY = 0;
-    }
-
-    initDragParams();
-
     hammertime.on("drag", function(e) {
         var deltaX = e.gesture.deltaX;
+        direction = deltaX < initPosX ? DIRECTION.LEFT : DIRECTION.RIGHT;
 
-        if (deltaX < initPos) goingLeft = true;
-
-        if (Math.abs(deltaX - initPos) <= lastDelta)
+        if (Math.abs(deltaX - initPosX) <= lastDeltaX)
         {
-            console.log("changing");
-            goingLeft = !goingLeft;
-            initPos = deltaX;
-            distanceMoved = 0;
+            direction = direction === DIRECTION.LEFT ? DIRECTION.RIGHT : DIRECTION.LEFT;
+            initPosX = deltaX;
+            blocksMovedX = 0;
         }
 
-        var toMove = Math.abs(deltaX - initPos) - distanceMoved * blockSize;
-        if (toMove >= blockSize)
+        var distanceToMoveX = Math.abs(deltaX - initPosX) - blocksMovedX * config.BLOCK_SIZE;
+        if (distanceToMoveX >= config.BLOCK_SIZE)
         {
-            if (goingLeft) moveLeft();
-            else moveRight();
-            distanceMoved++;
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                    moveLeft();
+                    break;
+                case DIRECTION._RIGHT:
+                    moveRight();
+                    break;
+            }
+            blocksMovedX++;
         }
-        lastDelta = Math.abs(deltaX - initPos);
+
+        lastDeltaX = Math.abs(deltaX - initPosX);
 
         e.preventDefault();
     });
-
-    hammertime.on("dragend", initDragParams);
-
 
     hammertime.on("dragdown", function(e) {
         var deltaY = e.gesture.deltaY;
-        var toMove = Math.abs(deltaY - initPosY) - distanceMovedY * blockSize;
-        if (toMove >= blockSize)
+        var distanceToMoveY = Math.abs(deltaY - initPosY) - blocksMovedY * config.BLOCK_SIZE;
+        
+        if (distanceToMoveY >= config.BLOCK_SIZE)
         {
             moveDown();
-            distanceMovedY++;
+            blocksMovedY++;
         }
+
         e.preventDefault();
     });
 
-    // Stop panning viewport up and down
+    // Stop panning iPhone viewport up and down
     hammertime.on("touchmove", function(e) {
         e.preventDefault();
     });
@@ -571,7 +588,8 @@ function setupBindings()
 
 $(function()
 {
-    drawBoard();
-    setupBindings();
+    drawGameBoard();
+    setupKeyBindings();
+    setupTouchBindings();
     gameLoop();
 });
