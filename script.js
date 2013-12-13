@@ -1,20 +1,18 @@
 /********************
     CONFIGURATION   */
 
-config =
-{
-    DIMENSION_X: 10, //blocks
-    DIMENSION_Y: 20, //blocks
-    GAME_SPEED: 1000 //millliseconds
-}
+var DIMENSION_X = 10; //blocks
+var DIMENSION_Y = 20; //blocks
+var GAME_SPEED = 1000; //millliseconds
+var BORDER_THICKNESS = 3; //pixels
 
 /********************/
 
-config.BOARD_COLOUR = "transparent"
-config.HIDDEN_ROWS = 5;
-config.EXTENT_Y = config.DIMENSION_Y + config.HIDDEN_ROWS;
+var BOARD_COLOUR = "transparent"
+var HIDDEN_ROWS = 5;
+var EXTENT_Y = DIMENSION_Y + HIDDEN_ROWS;
 $(function(){
-    config.BLOCK_SIZE = Math.floor(Math.min($(document).width() / config.DIMENSION_X, $(document).height() / config.DIMENSION_Y) - 1);
+    BLOCK_SIZE = Math.floor(Math.min($(document).width() / DIMENSION_X, $(document).height() / DIMENSION_Y) - 1);
 });
 
 var BLOCKED = 
@@ -24,9 +22,8 @@ var BLOCKED =
 }
 
 var isNewGame = true;
-var loopPosition = 0;
 var activeShape;
-var currSpeed = config.GAME_SPEED;
+var currSpeed = GAME_SPEED;
 var gameBoard = [];
 var timeout;
 
@@ -35,10 +32,24 @@ var shapeProto =
     width: function() { return this.definition[0].length; },
     height: function() { return this.definition.length; },
 
+    __blocksInOrder: function(func)
+    {
+        var rows = this.definition;
+        _.each(rows, _.bind(function(row, y)
+        {
+            _.each(row, _.bind(function(blockDef, x)
+            {
+                func = _.bind(func, this);
+                func(x, y, blockDef);
+            }, this));
+        }, this));
+    },
+
     visualise: function()
     {
         var drawing = "";
-        _.each(this.definition, function(row)
+        var rows = this.definition;
+        _.each(rows, function(row)
         {
             _.each(row, function(blockDef)
             {
@@ -49,21 +60,9 @@ var shapeProto =
         console.log(drawing);
     },
 
-    each: function(func)
-    {
-        var rows = this.definition;
-        _.each(rows, _.bind(function(row, y)
-        {
-            _.each(row, _.bind(function(blockDef, x)
-            {
-                _.bind(func, this)(x, y, blockDef);
-            }, this));
-        }, this));
-    },
-
     draw: function()
     {
-        this.each(function(x, y, blockDef) {
+        this.__blocksInOrder(function(x, y, blockDef) {
             var gameBlock = gameBoard[this.currY + y][this.currX + x];
             gameBlock.filled = blockDef | gameBlock.filled;
             gameBlock.colour = blockDef ? this.colour : gameBlock.colour;
@@ -73,20 +72,21 @@ var shapeProto =
 
     clear: function()
     {
-        this.each(function(x, y, blockDef) {
+        this.__blocksInOrder(function(x, y, blockDef) {
             var gameBlock = gameBoard[this.currY + y][this.currX + x];
             gameBlock.filled = blockDef ? false : gameBlock.filled;
-            gameBlock.colour = blockDef ? config.BOARD_COLOUR : gameBlock.colour;
+            gameBlock.colour = blockDef ? BOARD_COLOUR : gameBlock.colour;
             gameBlock.render();
         });
     }
-}
+};
 
 var blockProto =
 {
     render: function()
     {
         this.$elem.css("background", this.colour);
+        this.$elem.css("border-color", this.colour);
     }
 }
 
@@ -106,12 +106,12 @@ var shapes =
             colour: "cyan"
         }, shapeProto),
     _.extend(
-    {
-            definition:
-                [[1,1,1],
-                 [0,0,1]],
-             colour: "blue"
-    }, shapeProto),
+        {
+                definition:
+                    [[1,1,1],
+                     [0,0,1]],
+                 colour: "blue"
+        }, shapeProto),
     _.extend(
         {
             definition:
@@ -183,7 +183,7 @@ function rotateShape(shape, angle)
 
 function blockHidden()
 {
-    return activeShape.currY + activeShape.height() - 1 < config.HIDDEN_ROWS;
+    return activeShape.currY + activeShape.height() - 1 < HIDDEN_ROWS;
 }
 
 function isActiveShapeBlocked(side) // REM SIDE
@@ -226,8 +226,8 @@ function translateActiveShape(x, y, isGameLoop)
     var proposedX = activeShape.currX + x;
     var proposedY = activeShape.currY + y;
 
-    if (proposedX < 0 || proposedX + activeShape.width() - 1 >= config.DIMENSION_X  ||
-        proposedY < 0 || proposedY + activeShape.height() - 1 >= config.EXTENT_Y ||
+    if (proposedX < 0 || proposedX + activeShape.width() - 1 >= DIMENSION_X  ||
+        proposedY < 0 || proposedY + activeShape.height() - 1 >= EXTENT_Y ||
         (y && isActiveShapeSettled())) return;
 
     if (x != 0 && isActiveShapeBlocked(x > 0 ? BLOCKED.RIGHT : BLOCKED.LEFT)) return;
@@ -240,7 +240,7 @@ function translateActiveShape(x, y, isGameLoop)
 
 function drop()
 {
-    var currMin = config.EXTENT_Y + 1000;
+    var currMin = EXTENT_Y + 1000;
 
     for (var x = 0; x < activeShape.width(); x++)
     {
@@ -249,14 +249,14 @@ function drop()
             if (activeShape.definition[y][x])
             {
                 var colMax;
-                for (var boardY = activeShape.currY + y + 1; boardY < config.EXTENT_Y; boardY++)
+                for (var boardY = activeShape.currY + y + 1; boardY < EXTENT_Y; boardY++)
                 {
                     if (gameBoard[boardY][activeShape.currX + x].filled)
                     {
                         colMax = boardY - (activeShape.currY + y) - 1;
                         break;
                     }
-                    colMax = config.EXTENT_Y - activeShape.currY - activeShape.height();
+                    colMax = EXTENT_Y - activeShape.currY - activeShape.height();
                 }
                 currMin = Math.min(currMin, colMax);
                 break;
@@ -286,8 +286,8 @@ function rotateActiveShape(angle)
     if (blockHidden()) return;
 
     var proposedShape = rotateShape(activeShape, angle);
-    if (activeShape.currX + proposedShape.width() > config.DIMENSION_X ||
-        activeShape.currY + proposedShape.height() > config.EXTENT_Y) return;
+    if (activeShape.currX + proposedShape.width() > DIMENSION_X ||
+        activeShape.currY + proposedShape.height() > EXTENT_Y) return;
 
     for (var y = 0; y < proposedShape.height(); y++)
     {
@@ -306,24 +306,26 @@ function rotateActiveShape(angle)
 function drawGameBoard()
 {
     var $gameBoard = $("<div id='gameBoard' />");
-    $gameBoard.css("width", config.DIMENSION_X * config.BLOCK_SIZE);
-    $gameBoard.css("height", (config.DIMENSION_Y) * config.BLOCK_SIZE);
+    $gameBoard.css("width", DIMENSION_X * BLOCK_SIZE);
+    $gameBoard.css("height", DIMENSION_Y * BLOCK_SIZE);
     $("#iTetris").append($gameBoard);
 
-    for (var y = 0; y < config.EXTENT_Y; y++)
+    for (var y = 0; y < EXTENT_Y; y++)
     {
         gameBoard[y] = [];
-        for (var x = 0; x < config.DIMENSION_X; x++)
+        for (var x = 0; x < DIMENSION_X; x++)
         {
             var block = gameBoard[y][x] = _.extend(
                 {
                     filled: false,
-                    colour: config.BOARD_COLOUR,
+                    colour: BOARD_COLOUR,
                     $elem: $("<div class='block' />"),
                 }, blockProto);
-            block.$elem.css("width", config.BLOCK_SIZE);
-            block.$elem.css("height", config.BLOCK_SIZE);
-            if (y < config.HIDDEN_ROWS) block.$elem.hide();
+            block.$elem.css("width", BLOCK_SIZE - (2 * BORDER_THICKNESS));
+            block.$elem.css("height", BLOCK_SIZE - (2 * BORDER_THICKNESS));
+            block.$elem.css("border-width", BORDER_THICKNESS);
+            block.$elem.css("border-style", "outset");
+            if (y < HIDDEN_ROWS) block.$elem.hide();
             $gameBoard.append(block.$elem);
             block.render();
         }
@@ -332,7 +334,7 @@ function drawGameBoard()
 
 function isBlockSettled(x, y)
 {
-    return (y >= config.EXTENT_Y - 1 || gameBoard[y + 1][x].filled);
+    return (y >= EXTENT_Y - 1 || gameBoard[y + 1][x].filled);
 }
 
 function isActiveShapeSettled()
@@ -363,8 +365,8 @@ function newRandomShape()
 function addRandomShape()
 {
     activeShape = newRandomShape();
-    var startX = Math.floor((config.DIMENSION_X - activeShape.width()) / 2);
-    var startY = config.HIDDEN_ROWS - activeShape.height() - 1;
+    var startX = Math.floor((DIMENSION_X - activeShape.width()) / 2);
+    var startY = HIDDEN_ROWS - activeShape.height() - 1;
 
     activeShape.currX = startX;
     activeShape.currY = startY;
@@ -387,27 +389,27 @@ function addRandomShape()
 function completeRows()
 {
     var completedRows = [];
-    for (var y = config.EXTENT_Y - 1 ; y >= 0 ; y--)
+    for (var y = EXTENT_Y - 1 ; y >= 0 ; y--)
     {
-        for (var x = 0; x < config.DIMENSION_X; x++)
+        for (var x = 0; x < DIMENSION_X; x++)
         {
             if (!cleanBoardView(x, y))
             {
                 completedRows[y] = 0;
                 break;
             }
-            if (x == config.DIMENSION_X - 1) completedRows[y] = 1;
+            if (x == DIMENSION_X - 1) completedRows[y] = 1;
         }
 
         if (completedRows[y])
         {
             for (var iy = y; iy >= 0 ; iy--)
             {
-                for (var x = 0; x < config.DIMENSION_X; x++)
+                for (var x = 0; x < DIMENSION_X; x++)
                 {
                     var block = gameBoard[iy][x];
                     block.filled = iy === 0 ? false : cleanBoardView(x, iy - 1);
-                    block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : "transparent"; // Really need to make cleanBoardView return blocks not boolean
+                    block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : BOARD_COLOUR; // Really need to make cleanBoardView return blocks not boolean
                     block.render();
                 }
             }
@@ -423,7 +425,7 @@ function doGameOver()
 function isGameOver()
 {
     var gameOver = false;
-    _.each(gameBoard[config.HIDDEN_ROWS - 1], function(block)
+    _.each(gameBoard[HIDDEN_ROWS - 1], function(block)
     {
         if (block.filled) gameOver = true;
     });
@@ -547,8 +549,8 @@ function setupTouchBindings()
             blocksMovedX = 0;
         }
 
-        var distanceToMoveX = Math.abs(deltaX - initPosX) - blocksMovedX * config.BLOCK_SIZE;
-        if (distanceToMoveX >= config.BLOCK_SIZE)
+        var distanceToMoveX = Math.abs(deltaX - initPosX) - blocksMovedX * BLOCK_SIZE;
+        if (distanceToMoveX >= BLOCK_SIZE)
         {
             switch (direction)
             {
@@ -569,9 +571,9 @@ function setupTouchBindings()
 
     hammertime.on("dragdown", function(e) {
         var deltaY = e.gesture.deltaY;
-        var distanceToMoveY = Math.abs(deltaY - initPosY) - blocksMovedY * config.BLOCK_SIZE;
+        var distanceToMoveY = Math.abs(deltaY - initPosY) - blocksMovedY * BLOCK_SIZE;
         
-        if (distanceToMoveY >= config.BLOCK_SIZE)
+        if (distanceToMoveY >= BLOCK_SIZE)
         {
             moveDown();
             blocksMovedY++;
