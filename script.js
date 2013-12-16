@@ -16,7 +16,6 @@ var HIDDEN_ROWS = 5;
 var EXTENT_Y = DIMENSION_Y + HIDDEN_ROWS;
 $(function(){
     BLOCK_SIZE = Math.ceil(Math.min($(document).width() / DIMENSION_X, $(document).height() / DIMENSION_Y) - 1);
-    console.log(BLOCK_SIZE);
 });
 
 var BLOCKED = 
@@ -167,9 +166,14 @@ function rotateShape(shape, angle)
         rotShapeDef[i] = [];
     }
 
-    for (var x = 0; x < shape.width(); x++)
+    // for (var x = 0; x < shape.width(); x++)
+    // {
+    //     for (var y = 0; y < shape.height(); y++)
+    //     {
+    var rows = shape.definition;
+    _.each(rows, function(row, y)
     {
-        for (var y = 0; y < shape.height(); y++)
+        _.each(row, function(blockDef, x)
         {
             var coordX = x + 1;
             var coordY = shape.height() - y;
@@ -183,9 +187,9 @@ function rotateShape(shape, angle)
             var transformedX = transformedCoordX - 1;
             var transformedY = rotShapeHeight - transformedCoordY;
 
-            rotShapeDef[transformedY][transformedX] = shape.definition[y][x];
-        }
-    }
+            rotShapeDef[transformedY][transformedX] = blockDef;
+        });
+    });
 
     shape.definition = rotShapeDef;
     return shape;
