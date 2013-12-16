@@ -71,6 +71,22 @@ function rotateShape(shape, angle)
 
 function cleanBoardView(y, x)
 {
+    if (typeof x === "undefined")
+    {
+        return _.map(gameBoard[y], function(block, x)
+        {
+            if (typeof activeShape !== "undefined" &&
+                activeShape.currX <= x && x < activeShape.currX + activeShape.width() &&
+                activeShape.currY <= y && y < activeShape.currY + activeShape.height())
+            {
+                var shapeIndexX = x - activeShape.currX;
+                var shapeIndexY = y - activeShape.currY;
+                return activeShape.definition[shapeIndexY][shapeIndexX] ^ block.filled;
+            }
+            else return block.filled;
+        });
+    }
+
     if ((activeShape.currX <= x) && (x < activeShape.currX + activeShape.width()) &&
         (activeShape.currY <= y) && (y < activeShape.currY + activeShape.height()))
     {
@@ -337,9 +353,9 @@ function dropActiveShape()
 
 function newRandomShape()
 {
-    var shapeId = Math.floor(Math.random() * (shapes.length - 1));
+    var shapeId = 1; //Math.floor(Math.random() * (shapes.length - 1));
     var shape = _.extend({}, shapes[shapeId]);   
-    var angle = Math.floor(Math.random() * 4) * 90;
+    var angle = 270;//Math.floor(Math.random() * 4) * 90;
     var rotShape = rotateShape(shape, angle);
     return rotShape;
 }
@@ -371,13 +387,13 @@ function completeRows()
         {
             if (!cleanBoardView(y, x))
             {
-                completedRows[y] = 0;
+                completedRows.push(0);
                 break;
             }
-            if (x == DIMENSION_X - 1) completedRows[y] = 1;
+            if (x === DIMENSION_X - 1) completedRows.push(1);
         }
 
-        if (completedRows[y])
+        if (_.last(completedRows) === 1)
         {
             for (var iy = y; iy >= 0 ; iy--)
             {
@@ -389,23 +405,23 @@ function completeRows()
                     block.render();
                 }
             }
+            y++;
         }
     }
 }
 
 function doGameOver()
 {
-    //alert("GAME OVER SUCKER!");
+    gameIsOver = true;
 }
 
 function isGameOver()
 {
-    var gameOver = false;
-    _.each(gameBoard[HIDDEN_ROWS - 1], function(block)
+    console.log("checking game over");
+    return _.some(cleanBoardView(HIDDEN_ROWS - 1), function(block)
     {
-        if (block.filled) gameOver = true;
+        return block.filled;
     });
-    return gameOver;
 }
 
 function gameLoop()
