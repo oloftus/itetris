@@ -534,7 +534,6 @@ function setupTouchBindings()
     var blocksMovedX;
     var blocksMovedY;
     var initPosX;
-    var initPosY;
     var lastDeltaX;
 
     function initDragParams()
@@ -542,7 +541,6 @@ function setupTouchBindings()
         blocksMovedX = 0;
         blocksMovedY = 0;
         initPosX = 0;
-        initPosY = 0;
         lastDeltaX = 0;
     }
 
@@ -572,16 +570,14 @@ function setupTouchBindings()
         var deltaX = e.gesture.deltaX;
         var direction = deltaX < initPosX ? DIRECTION.LEFT : DIRECTION.RIGHT;
 
-        var currGap = Math.abs(deltaX - initPosX);
-        var lastGap = Math.abs(lastDeltaX - initPosX);
-        if (currGap <= lastGap)
+        if (Math.abs(deltaX - initPosX) <= lastDeltaX)
         {
             direction = direction === DIRECTION.LEFT ? DIRECTION.RIGHT : DIRECTION.LEFT;
-            initPosX = initPosX + deltaX;
+            initPosX = deltaX;
             blocksMovedX = 0;
         }
 
-        var distanceToMoveX = currGap - blocksMovedX * BLOCK_SIZE;
+        var distanceToMoveX = Math.abs(deltaX - initPosX) - blocksMovedX * BLOCK_SIZE;
         if (distanceToMoveX >= BLOCK_SIZE)
         {
             switch (direction)
@@ -596,7 +592,7 @@ function setupTouchBindings()
             blocksMovedX++;
         }
 
-        lastDeltaX = deltaX;
+        lastDeltaX = Math.abs(deltaX - initPosX);
 
         e.preventDefault();
     });
@@ -604,7 +600,7 @@ function setupTouchBindings()
     hammertime.on("dragdown", function(e)
     {
         var deltaY = e.gesture.deltaY;
-        var distanceToMoveY = Math.abs(deltaY - initPosY) - blocksMovedY * BLOCK_SIZE;
+        var distanceToMoveY = Math.abs(deltaY) - blocksMovedY * BLOCK_SIZE;
         
         if (distanceToMoveY >= BLOCK_SIZE)
         {
