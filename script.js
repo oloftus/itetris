@@ -316,7 +316,7 @@ function dropActiveShape()
                 {
                     if (gameBoard[boardY][activeShape.currX + x].filled)
                     {
-                        colMax = boardY - activeShape.currY + y - 1;
+                        colMax = boardY - (activeShape.currY + y) - 1;
                         break;
                     }
                     colMax = EXTENT_Y - activeShape.currY - activeShape.height();
