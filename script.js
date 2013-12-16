@@ -31,25 +31,75 @@ var gameBoard = [];
 var gameLoopTimer;
 
 
+/**** UTILITY ****/
+
+function rotateShape(shape, angle)
+{
+    shape = _.extend({}, shape);
+    if (angle === 0 || angle === 360) return shape;
+
+    var radAngle = 2 * Math.PI * angle / 360; 
+    var rotShapeDef = [];
+    var rotShapeWidth = angle === 180 ? shape.width() : shape.height();
+    var rotShapeHeight = angle === 180 ? shape.height() : shape.width();
+    
+    for (var i = 0; i < rotShapeHeight; i++)
+    {
+        rotShapeDef[i] = [];
+    }
+
+    blocksInOrder(function(x, y, blockDef)
+        {
+            var coordX = x + 1;
+            var coordY = shape.height() - y;
+            
+            var newCoordX = coordX * Math.round(Math.cos(radAngle)) - coordY * Math.round(Math.sin(radAngle));
+            var newCoordY = coordX * Math.round(Math.sin(radAngle)) + coordY * Math.round(Math.cos(radAngle));
+            
+            var transformedCoordX = angle === 90 || angle === 180 ? newCoordX + rotShapeWidth + 1 : newCoordX;
+            var transformedCoordY = angle === 180 || angle === 270 ? newCoordY + rotShapeHeight + 1 : newCoordY;
+
+            var transformedX = transformedCoordX - 1;
+            var transformedY = rotShapeHeight - transformedCoordY;
+
+            rotShapeDef[transformedY][transformedX] = blockDef;
+        }, this, shape);
+
+    shape.definition = rotShapeDef;
+    return shape;
+}
+
+function cleanBoardView(y, x)
+{
+    if ((activeShape.currX <= x) && (x < activeShape.currX + activeShape.width()) &&
+        (activeShape.currY <= y) && (y < activeShape.currY + activeShape.height()))
+    {
+        var shapeIndexX = x - activeShape.currX;
+        var shapeIndexY = y - activeShape.currY;
+        return activeShape.definition[shapeIndexY][shapeIndexX] ^ gameBoard[y][x].filled;
+    }
+    else return gameBoard[y][x].filled;
+}
+
+function blocksInOrder(func, self, shape)
+{
+    var rows = shape.definition;
+    _.each(rows, _.bind(function(row, y)
+    {
+        _.each(row, _.bind(function(blockDef, x)
+        {
+            func = _.bind(func, this);
+            func(x, y, blockDef);
+        }, self));
+    }, self));
+}
+
 /**** SHAPES & BLOCKS ****/
 
 var shapeProto =
 {
     width: function() { return this.definition[0].length; },
     height: function() { return this.definition.length; },
-
-    __blocksInOrder: function(func)
-    {
-        var rows = this.definition;
-        _.each(rows, _.bind(function(row, y)
-        {
-            _.each(row, _.bind(function(blockDef, x)
-            {
-                func = _.bind(func, this);
-                func(x, y, blockDef);
-            }, this));
-        }, this));
-    },
 
     visualise: function()
     {
@@ -68,22 +118,24 @@ var shapeProto =
 
     draw: function()
     {
-        this.__blocksInOrder(function(x, y, blockDef) {
-            var gameBlock = gameBoard[this.currY + y][this.currX + x];
-            gameBlock.filled = blockDef | gameBlock.filled;
-            gameBlock.colour = blockDef ? this.colour : gameBlock.colour;
-            gameBlock.render();
-        });
+        blocksInOrder(function(x, y, blockDef)
+            {
+                var gameBlock = gameBoard[this.currY + y][this.currX + x];
+                gameBlock.filled = blockDef | gameBlock.filled;
+                gameBlock.colour = blockDef ? this.colour : gameBlock.colour;
+                gameBlock.render();
+            }, this, this);
     },
 
     clear: function()
     {
-        this.__blocksInOrder(function(x, y, blockDef) {
-            var gameBlock = gameBoard[this.currY + y][this.currX + x];
-            gameBlock.filled = blockDef ? false : gameBlock.filled;
-            gameBlock.colour = blockDef ? BOARD_COLOUR : gameBlock.colour;
-            gameBlock.render();
-        });
+        blocksInOrder(function(x, y, blockDef)
+            {
+                var gameBlock = gameBoard[this.currY + y][this.currX + x];
+                gameBlock.filled = blockDef ? false : gameBlock.filled;
+                gameBlock.colour = blockDef ? BOARD_COLOUR : gameBlock.colour;
+                gameBlock.render();
+            }, this, this);
     }
 };
 
@@ -148,60 +200,6 @@ var shapes =
         }, shapeProto)
 ];
 
-
-/**** UTILITY ****/
-
-function rotateShape(shape, angle)
-{
-    shape = _.extend({}, shape);
-    if (angle === 0 || angle === 360) return shape;
-
-    var radAngle = 2 * Math.PI * angle / 360; 
-    var rotShapeDef = [];
-    var rotShapeWidth = angle === 180 ? shape.width() : shape.height();
-    var rotShapeHeight = angle === 180 ? shape.height() : shape.width();
-    
-    for (var i = 0; i < rotShapeHeight; i++)
-    {
-        rotShapeDef[i] = [];
-    }
-
-    var rows = shape.definition;
-    _.each(rows, function(row, y)
-    {
-        _.each(row, function(blockDef, x)
-        {
-            var coordX = x + 1;
-            var coordY = shape.height() - y;
-            
-            var newCoordX = coordX * Math.round(Math.cos(radAngle)) - coordY * Math.round(Math.sin(radAngle));
-            var newCoordY = coordX * Math.round(Math.sin(radAngle)) + coordY * Math.round(Math.cos(radAngle));
-            
-            var transformedCoordX = angle === 90 || angle === 180 ? newCoordX + rotShapeWidth + 1 : newCoordX;
-            var transformedCoordY = angle === 180 || angle === 270 ? newCoordY + rotShapeHeight + 1 : newCoordY;
-
-            var transformedX = transformedCoordX - 1;
-            var transformedY = rotShapeHeight - transformedCoordY;
-
-            rotShapeDef[transformedY][transformedX] = blockDef;
-        });
-    });
-
-    shape.definition = rotShapeDef;
-    return shape;
-}
-
-function cleanBoardView(y, x)
-{
-    if ((activeShape.currX <= x) && (x < activeShape.currX + activeShape.width()) &&
-        (activeShape.currY <= y) && (y < activeShape.currY + activeShape.height()))
-    {
-        var shapeIndexX = x - activeShape.currX;
-        var shapeIndexY = y - activeShape.currY;
-        return activeShape.definition[shapeIndexY][shapeIndexX] ^ gameBoard[y][x].filled;
-    }
-    else return gameBoard[y][x].filled;
-}
 
 /**** ACTIVE SHAPE ****/
 
@@ -355,17 +353,13 @@ function addRandomShape()
     activeShape.currX = startX;
     activeShape.currY = startY;
 
-    var rows = activeShape.definition;
-    _.each(rows, function(row, y)
-    {
-        _.each(row, function(blockDef, x)
+    blocksInOrder(function(x, y, blockDef)
         {
             var block = gameBoard[activeShape.currY + y][activeShape.currX + x]
             block.filled = blockDef;
             block.colour = blockDef ? activeShape.colour : block.colour;
             block.render();
-        });
-    });
+        }, this, activeShape);
 }
 
 function completeRows()
@@ -536,7 +530,7 @@ function setupTouchBindings()
     var initPosX;
     var lastDeltaX;
 
-    function initDragParams()
+    function initParams()
     {
         blocksMovedX = 0;
         blocksMovedY = 0;
@@ -550,8 +544,8 @@ function setupTouchBindings()
         e.preventDefault();
     });
 
-    hammertime.on("dragend", initDragParams);
-    initDragParams();
+    hammertime.on("dragend", initParams);
+    initParams();
 
     hammertime.on("swipedown", function(e)
     {
@@ -570,7 +564,7 @@ function setupTouchBindings()
         var deltaX = e.gesture.deltaX;
         var direction = deltaX < initPosX ? DIRECTION.LEFT : DIRECTION.RIGHT;
 
-        if (Math.abs(deltaX - initPosX) <= lastDeltaX)
+        if (Math.abs(deltaX - initPosX) <= Math.abs(lastDeltaX - initPosX))
         {
             direction = direction === DIRECTION.LEFT ? DIRECTION.RIGHT : DIRECTION.LEFT;
             initPosX = deltaX;
@@ -592,7 +586,7 @@ function setupTouchBindings()
             blocksMovedX++;
         }
 
-        lastDeltaX = Math.abs(deltaX - initPosX);
+        lastDeltaX = deltaX;
 
         e.preventDefault();
     });
