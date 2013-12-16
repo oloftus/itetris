@@ -4,15 +4,19 @@
 var DIMENSION_X = 10; //blocks
 var DIMENSION_Y = 20; //blocks
 var GAME_SPEED = 1000; //millliseconds
-var BORDER_THICKNESS = 3; //pixels
+var BORDER_WIDTH = 3; //pixels
 
 /********************/
+
+
+/**** GLOBALS ****/
 
 var BOARD_COLOUR = "transparent"
 var HIDDEN_ROWS = 5;
 var EXTENT_Y = DIMENSION_Y + HIDDEN_ROWS;
 $(function(){
-    BLOCK_SIZE = Math.floor(Math.min($(document).width() / DIMENSION_X, $(document).height() / DIMENSION_Y) - 1);
+    BLOCK_SIZE = Math.ceil(Math.min($(document).width() / DIMENSION_X, $(document).height() / DIMENSION_Y) - 1);
+    console.log(BLOCK_SIZE);
 });
 
 var BLOCKED = 
@@ -26,6 +30,9 @@ var activeShape;
 var currSpeed = GAME_SPEED;
 var gameBoard = [];
 var timeout;
+
+
+/**** SHAPES & BLOCKS ****/
 
 var shapeProto =
 {
@@ -142,6 +149,9 @@ var shapes =
         }, shapeProto)
 ];
 
+
+/**** UTILITY ****/
+
 function rotateShape(shape, angle)
 {
     shape = _.extend({}, shape);
@@ -181,12 +191,21 @@ function rotateShape(shape, angle)
     return shape;
 }
 
-function blockHidden()
+function cleanBoardView(x, y)
 {
-    return activeShape.currY + activeShape.height() - 1 < HIDDEN_ROWS;
+    if ((activeShape.currX <= x) && (x < activeShape.currX + activeShape.width()) &&
+        (activeShape.currY <= y) && (y < activeShape.currY + activeShape.height()))
+    {
+        var shapeIndexX = x - activeShape.currX;
+        var shapeIndexY = y - activeShape.currY;
+        return activeShape.definition[shapeIndexY][shapeIndexX] ^ gameBoard[y][x].filled;
+    }
+    else return gameBoard[y][x].filled;
 }
 
-function isActiveShapeBlocked(side) // REM SIDE
+/**** ACTIVE SHAPE ****/
+
+function isActiveShapeBlocked(side)
 {
     for (var y = activeShape.height() - 1; y >= 0; y--)
     {
@@ -219,9 +238,33 @@ function isActiveShapeBlocked(side) // REM SIDE
     }
 }
 
+function isActiveShapeSettled()
+{
+    for (var x = 0; x < activeShape.width(); x++)
+    {
+        for (var y = activeShape.height() - 1; y >= 0; y--)
+        {
+            if (activeShape.definition[y][x])
+            {
+                var checkX = activeShape.currX + x;
+                var checkY = activeShape.currY + y;
+                if (checkY >= EXTENT_Y - 1 || gameBoard[checkY + 1][checkX].filled)
+                    return true
+                break;
+            }
+        }
+    }
+    return false;
+}
+
+function isBlockHidden()
+{
+    return activeShape.currY + activeShape.height() - 1 < HIDDEN_ROWS;
+}
+
 function translateActiveShape(x, y, isGameLoop)
 {
-    if (blockHidden() && !isGameLoop) return;
+    if (isBlockHidden() && !isGameLoop) return;
 
     var proposedX = activeShape.currX + x;
     var proposedY = activeShape.currY + y;
@@ -238,7 +281,29 @@ function translateActiveShape(x, y, isGameLoop)
     activeShape.draw();
 }
 
-function drop()
+function rotateActiveShape(angle)
+{
+    if (isBlockHidden()) return;
+
+    var proposedShape = rotateShape(activeShape, angle);
+    if (activeShape.currX + proposedShape.width() > DIMENSION_X ||
+        activeShape.currY + proposedShape.height() > EXTENT_Y) return;
+
+    for (var y = 0; y < proposedShape.height(); y++)
+    {
+        for (var x = 0; x < proposedShape.width(); x++)
+        {
+            if (cleanBoardView(activeShape.currX + x, activeShape.currY + y) &&
+                proposedShape.definition[y][x]) return;
+        }
+    }
+
+    activeShape.clear();
+    activeShape = proposedShape;
+    activeShape.draw();
+}
+
+function dropActiveShape()
 {
     var currMin = EXTENT_Y + 1000;
 
@@ -268,91 +333,8 @@ function drop()
     gameLoop();
 }
 
-// The gameboard as if the active block was not there (0s)
-function cleanBoardView(x, y)
-{
-    if ((activeShape.currX <= x) && (x < activeShape.currX + activeShape.width()) &&
-        (activeShape.currY <= y) && (y < activeShape.currY + activeShape.height()))
-    {
-        var shapeIndexX = x - activeShape.currX;
-        var shapeIndexY = y - activeShape.currY;
-        return activeShape.definition[shapeIndexY][shapeIndexX] ^ gameBoard[y][x].filled;
-    }
-    else return gameBoard[y][x].filled;
-}
 
-function rotateActiveShape(angle)
-{
-    if (blockHidden()) return;
-
-    var proposedShape = rotateShape(activeShape, angle);
-    if (activeShape.currX + proposedShape.width() > DIMENSION_X ||
-        activeShape.currY + proposedShape.height() > EXTENT_Y) return;
-
-    for (var y = 0; y < proposedShape.height(); y++)
-    {
-        for (var x = 0; x < proposedShape.width(); x++)
-        {
-            if (cleanBoardView(activeShape.currX + x, activeShape.currY + y) &&
-                proposedShape.definition[y][x]) return;
-        }
-    }
-
-    activeShape.clear();
-    activeShape = proposedShape;
-    activeShape.draw();
-}
-
-function drawGameBoard()
-{
-    var $gameBoard = $("<div id='gameBoard' />");
-    $gameBoard.css("width", DIMENSION_X * BLOCK_SIZE);
-    $gameBoard.css("height", DIMENSION_Y * BLOCK_SIZE);
-    $("#iTetris").append($gameBoard);
-
-    for (var y = 0; y < EXTENT_Y; y++)
-    {
-        gameBoard[y] = [];
-        for (var x = 0; x < DIMENSION_X; x++)
-        {
-            var block = gameBoard[y][x] = _.extend(
-                {
-                    filled: false,
-                    colour: BOARD_COLOUR,
-                    $elem: $("<div class='block' />"),
-                }, blockProto);
-            block.$elem.css("width", BLOCK_SIZE - (2 * BORDER_THICKNESS));
-            block.$elem.css("height", BLOCK_SIZE - (2 * BORDER_THICKNESS));
-            block.$elem.css("border-width", BORDER_THICKNESS);
-            block.$elem.css("border-style", "outset");
-            if (y < HIDDEN_ROWS) block.$elem.hide();
-            $gameBoard.append(block.$elem);
-            block.render();
-        }
-    }
-}
-
-function isBlockSettled(x, y)
-{
-    return (y >= EXTENT_Y - 1 || gameBoard[y + 1][x].filled);
-}
-
-function isActiveShapeSettled()
-{
-    for (var x = 0; x < activeShape.width(); x++)
-    {
-        for (var y = activeShape.height() - 1; y >= 0; y--)
-        {
-            if (activeShape.definition[y][x])
-            {
-                if (isBlockSettled(activeShape.currX + x, activeShape.currY + y))
-                    return true
-                break;
-            }
-        }
-    }
-    return false;
-}
+/**** GAME LOOP ****/
 
 function newRandomShape()
 {
@@ -451,6 +433,8 @@ function gameLoop()
     timeout = setTimeout(gameLoop, currSpeed);
 }
 
+
+/**** CONTROLS ****/
 function moveLeft()
 {
     translateActiveShape(-1, 0);
@@ -469,6 +453,38 @@ function rotate()
 function moveDown()
 {
     translateActiveShape(0, 1);
+}
+
+
+/**** SETUP ****/
+
+function drawGameBoard()
+{
+    var $gameBoard = $("<div id='gameBoard' />");
+    $gameBoard.css("width", DIMENSION_X * BLOCK_SIZE);
+    $gameBoard.css("height", DIMENSION_Y * BLOCK_SIZE);
+    $("#iTetris").append($gameBoard);
+
+    for (var y = 0; y < EXTENT_Y; y++)
+    {
+        gameBoard[y] = [];
+        for (var x = 0; x < DIMENSION_X; x++)
+        {
+            var block = gameBoard[y][x] = _.extend(
+                {
+                    filled: false,
+                    colour: BOARD_COLOUR,
+                    $elem: $("<div class='block' />"),
+                }, blockProto);
+            block.$elem.css("width", BLOCK_SIZE - (2 * BORDER_WIDTH));
+            block.$elem.css("height", BLOCK_SIZE - (2 * BORDER_WIDTH));
+            block.$elem.css("border-width", BORDER_WIDTH);
+            block.$elem.css("border-style", "outset");
+            if (y < HIDDEN_ROWS) block.$elem.hide();
+            $gameBoard.append(block.$elem);
+            block.render();
+        }
+    }
 }
 
 function setupKeyBindings()
@@ -490,7 +506,7 @@ function setupKeyBindings()
                 moveDown();
                 break;
             case 32: // Space bar
-                drop();
+                dropActiveShape();
                 break;
             default:
                 return;
@@ -529,7 +545,7 @@ function setupTouchBindings()
     initDragParams();
 
     hammertime.on("swipedown", function(e) {
-        drop();
+        dropActiveShape();
         e.preventDefault();
     });
 
