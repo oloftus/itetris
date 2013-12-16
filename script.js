@@ -28,7 +28,7 @@ var isNewGame = true;
 var activeShape;
 var currSpeed = GAME_SPEED;
 var gameBoard = [];
-var timeout;
+var gameLoopTimer;
 
 
 /**** SHAPES & BLOCKS ****/
@@ -166,10 +166,6 @@ function rotateShape(shape, angle)
         rotShapeDef[i] = [];
     }
 
-    // for (var x = 0; x < shape.width(); x++)
-    // {
-    //     for (var y = 0; y < shape.height(); y++)
-    //     {
     var rows = shape.definition;
     _.each(rows, function(row, y)
     {
@@ -195,7 +191,7 @@ function rotateShape(shape, angle)
     return shape;
 }
 
-function cleanBoardView(x, y)
+function cleanBoardView(y, x)
 {
     if ((activeShape.currX <= x) && (x < activeShape.currX + activeShape.width()) &&
         (activeShape.currY <= y) && (y < activeShape.currY + activeShape.height()))
@@ -213,31 +209,33 @@ function isActiveShapeBlocked(side)
 {
     for (var y = activeShape.height() - 1; y >= 0; y--)
     {
-        if (side == BLOCKED.LEFT)
+        switch (side)
         {
-            for (var x = 0; x < activeShape.width(); x++)
-            {
-                if (activeShape.definition[y][x])
+            case BLOCKED.LEFT:
+                for (var x = 0; x < activeShape.width(); x++)
                 {
-                    if (gameBoard[activeShape.currY + y][activeShape.currX + x - 1].filled)
-                        return true
-                    break;
+                    if (activeShape.definition[y][x])
+                    {
+                        if (gameBoard[activeShape.currY + y][activeShape.currX + x - 1].filled)
+                            return true
+                        break;
+                    }
+                    else continue;
                 }
-                else continue;
-            }
-        }
-        else
-        {
-            for (var x = activeShape.width() - 1; x >= 0 ; x--)
-            {
-                if (activeShape.definition[y][x])
+                break;
+
+            case BLOCKED.RIGHT:
+                for (var x = activeShape.width() - 1; x >= 0 ; x--)
                 {
-                    if (gameBoard[activeShape.currY + y][activeShape.currX + x + 1].filled)
-                        return true
-                    break;
+                    if (activeShape.definition[y][x])
+                    {
+                        if (gameBoard[activeShape.currY + y][activeShape.currX + x + 1].filled)
+                            return true
+                        break;
+                    }
+                    else continue;
                 }
-                else continue;
-            }
+                break;
         }
     }
 }
@@ -250,9 +248,9 @@ function isActiveShapeSettled()
         {
             if (activeShape.definition[y][x])
             {
-                var checkX = activeShape.currX + x;
-                var checkY = activeShape.currY + y;
-                if (checkY >= EXTENT_Y - 1 || gameBoard[checkY + 1][checkX].filled)
+                var boardX = activeShape.currX + x;
+                var boardY = activeShape.currY + y;
+                if (boardY >= EXTENT_Y - 1 || gameBoard[boardY + 1][boardX].filled)
                     return true
                 break;
             }
@@ -268,16 +266,14 @@ function isBlockHidden()
 
 function translateActiveShape(x, y, isGameLoop)
 {
-    if (isBlockHidden() && !isGameLoop) return;
-
     var proposedX = activeShape.currX + x;
     var proposedY = activeShape.currY + y;
 
-    if (proposedX < 0 || proposedX + activeShape.width() - 1 >= DIMENSION_X  ||
+    if ((isBlockHidden() && !isGameLoop) ||
+        proposedX < 0 || proposedX + activeShape.width() - 1 >= DIMENSION_X  ||
         proposedY < 0 || proposedY + activeShape.height() - 1 >= EXTENT_Y ||
-        (y && isActiveShapeSettled())) return;
-
-    if (x != 0 && isActiveShapeBlocked(x > 0 ? BLOCKED.RIGHT : BLOCKED.LEFT)) return;
+        (y && isActiveShapeSettled()) ||
+        (x && isActiveShapeBlocked(x > 0 ? BLOCKED.RIGHT : BLOCKED.LEFT))) return;
 
     activeShape.clear();
     activeShape.currX += x;
@@ -287,18 +283,18 @@ function translateActiveShape(x, y, isGameLoop)
 
 function rotateActiveShape(angle)
 {
-    if (isBlockHidden()) return;
-
     var proposedShape = rotateShape(activeShape, angle);
-    if (activeShape.currX + proposedShape.width() > DIMENSION_X ||
+
+    if (isBlockHidden() ||
+        activeShape.currX + proposedShape.width() > DIMENSION_X ||
         activeShape.currY + proposedShape.height() > EXTENT_Y) return;
 
     for (var y = 0; y < proposedShape.height(); y++)
     {
         for (var x = 0; x < proposedShape.width(); x++)
         {
-            if (cleanBoardView(activeShape.currX + x, activeShape.currY + y) &&
-                proposedShape.definition[y][x]) return;
+            if (proposedShape.definition[y][x] &&
+                cleanBoardView(activeShape.currY + y, activeShape.currX + x)) return;
         }
     }
 
@@ -322,7 +318,7 @@ function dropActiveShape()
                 {
                     if (gameBoard[boardY][activeShape.currX + x].filled)
                     {
-                        colMax = boardY - (activeShape.currY + y) - 1;
+                        colMax = boardY - activeShape.currY + y - 1;
                         break;
                     }
                     colMax = EXTENT_Y - activeShape.currY - activeShape.height();
@@ -332,8 +328,9 @@ function dropActiveShape()
             }
         }
     }
+
     translateActiveShape(0, currMin);
-    clearTimeout(timeout);
+    clearTimeout(gameLoopTimer);
     gameLoop();
 }
 
@@ -345,7 +342,8 @@ function newRandomShape()
     var shapeId = Math.floor(Math.random() * (shapes.length - 1));
     var shape = _.extend({}, shapes[shapeId]);   
     var angle = Math.floor(Math.random() * 4) * 90;
-    return rotateShape(shape, angle);
+    var rotShape = rotateShape(shape, angle);
+    return rotShape;
 }
 
 function addRandomShape()
@@ -357,19 +355,17 @@ function addRandomShape()
     activeShape.currX = startX;
     activeShape.currY = startY;
 
-    for (var y = 0; y < activeShape.height(); y++)
+    var rows = activeShape.definition;
+    _.each(rows, function(row, y)
     {
-        for (var x = 0; x < activeShape.width(); x++)
+        _.each(row, function(blockDef, x)
         {
             var block = gameBoard[activeShape.currY + y][activeShape.currX + x]
-            block.filled = activeShape.definition[y][x];
-            if (block.filled)
-            {
-                block.colour = activeShape.colour;
-                block.render();
-            }
-        }
-    }
+            block.filled = blockDef;
+            block.colour = blockDef ? activeShape.colour : block.colour;
+            block.render();
+        });
+    });
 }
 
 function completeRows()
@@ -379,7 +375,7 @@ function completeRows()
     {
         for (var x = 0; x < DIMENSION_X; x++)
         {
-            if (!cleanBoardView(x, y))
+            if (!cleanBoardView(y, x))
             {
                 completedRows[y] = 0;
                 break;
@@ -394,8 +390,8 @@ function completeRows()
                 for (var x = 0; x < DIMENSION_X; x++)
                 {
                     var block = gameBoard[iy][x];
-                    block.filled = iy === 0 ? false : cleanBoardView(x, iy - 1);
-                    block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : BOARD_COLOUR; // Really need to make cleanBoardView return blocks not boolean
+                    block.filled = iy === 0 ? false : cleanBoardView(iy - 1, x);
+                    block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : BOARD_COLOUR;
                     block.render();
                 }
             }
@@ -429,12 +425,11 @@ function gameLoop()
             return;
         }
         addRandomShape();
+        completeRows();
     }
 
     translateActiveShape(0, 1, true);
-    completeRows();
-
-    timeout = setTimeout(gameLoop, currSpeed);
+    gameLoopTimer = setTimeout(gameLoop, currSpeed);
 }
 
 
@@ -459,6 +454,11 @@ function moveDown()
     translateActiveShape(0, 1);
 }
 
+function drop()
+{
+    dropActiveShape();
+}
+
 
 /**** SETUP ****/
 
@@ -474,7 +474,7 @@ function drawGameBoard()
         gameBoard[y] = [];
         for (var x = 0; x < DIMENSION_X; x++)
         {
-            var block = gameBoard[y][x] = _.extend(
+            var block = _.extend(
                 {
                     filled: false,
                     colour: BOARD_COLOUR,
@@ -484,8 +484,10 @@ function drawGameBoard()
             block.$elem.css("height", BLOCK_SIZE - (2 * BORDER_WIDTH));
             block.$elem.css("border-width", BORDER_WIDTH);
             block.$elem.css("border-style", "outset");
-            if (y < HIDDEN_ROWS) block.$elem.hide();
             $gameBoard.append(block.$elem);
+            gameBoard[y][x] = block;
+
+            if (y < HIDDEN_ROWS) block.$elem.hide();
             block.render();
         }
     }
@@ -510,7 +512,7 @@ function setupKeyBindings()
                 moveDown();
                 break;
             case 32: // Space bar
-                dropActiveShape();
+                drop();
                 break;
             default:
                 return;
@@ -534,7 +536,6 @@ function setupTouchBindings()
     var initPosX;
     var initPosY;
     var lastDeltaX;
-    var direction;
 
     function initDragParams()
     {
@@ -545,31 +546,42 @@ function setupTouchBindings()
         lastDeltaX = 0;
     }
 
-    hammertime.on("dragend", initDragParams);
-    initDragParams();
-
-    hammertime.on("swipedown", function(e) {
-        dropActiveShape();
+    // Stop panning iPhone viewport up and down
+    hammertime.on("touchmove", function(e)
+    {
         e.preventDefault();
     });
 
-    hammertime.on("swipeup", function(e) {
+    hammertime.on("dragend", initDragParams);
+    initDragParams();
+
+    hammertime.on("swipedown", function(e)
+    {
+        drop();
+        e.preventDefault();
+    });
+
+    hammertime.on("tap", function(e)
+    {
         rotate();
         e.preventDefault();
     });
 
-    hammertime.on("drag", function(e) {
+    hammertime.on("drag", function(e)
+    {
         var deltaX = e.gesture.deltaX;
-        direction = deltaX < initPosX ? DIRECTION.LEFT : DIRECTION.RIGHT;
+        var direction = deltaX < initPosX ? DIRECTION.LEFT : DIRECTION.RIGHT;
 
-        if (Math.abs(deltaX - initPosX) <= lastDeltaX)
+        var currGap = Math.abs(deltaX - initPosX);
+        var lastGap = Math.abs(lastDeltaX - initPosX);
+        if (currGap <= lastGap)
         {
             direction = direction === DIRECTION.LEFT ? DIRECTION.RIGHT : DIRECTION.LEFT;
-            initPosX = deltaX;
+            initPosX = initPosX + deltaX;
             blocksMovedX = 0;
         }
 
-        var distanceToMoveX = Math.abs(deltaX - initPosX) - blocksMovedX * BLOCK_SIZE;
+        var distanceToMoveX = currGap - blocksMovedX * BLOCK_SIZE;
         if (distanceToMoveX >= BLOCK_SIZE)
         {
             switch (direction)
@@ -577,19 +589,20 @@ function setupTouchBindings()
                 case DIRECTION.LEFT:
                     moveLeft();
                     break;
-                case DIRECTION._RIGHT:
+                case DIRECTION.RIGHT:
                     moveRight();
                     break;
             }
             blocksMovedX++;
         }
 
-        lastDeltaX = Math.abs(deltaX - initPosX);
+        lastDeltaX = deltaX;
 
         e.preventDefault();
     });
 
-    hammertime.on("dragdown", function(e) {
+    hammertime.on("dragdown", function(e)
+    {
         var deltaY = e.gesture.deltaY;
         var distanceToMoveY = Math.abs(deltaY - initPosY) - blocksMovedY * BLOCK_SIZE;
         
@@ -599,11 +612,6 @@ function setupTouchBindings()
             blocksMovedY++;
         }
 
-        e.preventDefault();
-    });
-
-    // Stop panning iPhone viewport up and down
-    hammertime.on("touchmove", function(e) {
         e.preventDefault();
     });
 }
