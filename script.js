@@ -475,8 +475,8 @@ function drop()
 function drawGameBoard()
 {
     var $gameBoard = $("<div id='gameBoard' />");
-    $gameBoard.css("width", DIMENSION_X * BLOCK_SIZE);
-    $gameBoard.css("height", DIMENSION_Y * BLOCK_SIZE);
+    $gameBoard.width(DIMENSION_X * BLOCK_SIZE);
+    $gameBoard.height(DIMENSION_Y * BLOCK_SIZE);
     $("#iTetris").append($gameBoard);
 
     for (var y = 0; y < EXTENT_Y; y++)
@@ -490,8 +490,8 @@ function drawGameBoard()
                     colour: BOARD_COLOUR,
                     $elem: $("<div class='block' />"),
                 }, blockProto);
-            block.$elem.css("width", BLOCK_SIZE - (2 * BORDER_WIDTH));
-            block.$elem.css("height", BLOCK_SIZE - (2 * BORDER_WIDTH));
+            block.$elem.width(BLOCK_SIZE - (2 * BORDER_WIDTH));
+            block.$elem.height(BLOCK_SIZE - (2 * BORDER_WIDTH));
             block.$elem.css("border-width", BORDER_WIDTH);
             block.$elem.css("border-style", "outset");
             $gameBoard.append(block.$elem);
