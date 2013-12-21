@@ -1,3 +1,10 @@
-body{margin:0;background-color:#444444;overflow:hidden;}
-#gameBoard{margin:0 auto;height:100%;background-color:#FFFACD;}
-.block{float:left;margin-top:0px;}
+body{margin:0;background-color:#444444;overflow:hidden;
+    font-size:12px;font-family:sans-serif;color:white;}
+#iTetris{margin:0 auto;}
+#iTetris h1{float:left;}
+#scoreCard{float:left;margin-left:20px;}
+#nextShape{float:right;}
+#scoreCard p{font-size:0.9;margin:0;}
+#nextShape, #gameBoard{background-color:#FFFACD;}
+#gameBoard{clear:both;}
+.block{display:inline-block;}

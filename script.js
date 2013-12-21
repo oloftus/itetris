@@ -16,6 +16,7 @@ var HIDDEN_ROWS = 5;
 var EXTENT_Y = DIMENSION_Y + HIDDEN_ROWS;
 $(function(){
     BLOCK_SIZE = Math.ceil(Math.min($(document).width() / DIMENSION_X, $(document).height() / DIMENSION_Y) - 1);
+    $GAME_ROOT = $("#iTetris");
 });
 
 var BLOCKED = 
@@ -25,10 +26,12 @@ var BLOCKED =
 }
 
 var isNewGame = true;
-var activeShape;
 var currSpeed = GAME_SPEED;
-var gameBoard = [];
 var gameLoopTimer;
+var activeShape;
+var nextShape;
+var gameBoard = [];
+var nextShapeDisplay = [];
 
 
 /**** UTILITY ****/
@@ -353,16 +356,33 @@ function dropActiveShape()
 
 function newRandomShape()
 {
-    var shapeId = 1; //Math.floor(Math.random() * (shapes.length - 1));
+    var shapeId = Math.floor(Math.random() * (shapes.length - 1));
     var shape = _.extend({}, shapes[shapeId]);   
-    var angle = 270;//Math.floor(Math.random() * 4) * 90;
+    var angle = Math.floor(Math.random() * 4) * 90;
     var rotShape = rotateShape(shape, angle);
     return rotShape;
 }
 
-function addRandomShape()
+function displayNextShape(shape)
 {
-    activeShape = newRandomShape();
+    var startX = Math.floor((4 - shape.width()) / 2);
+    var startY = Math.floor(shape.height() / 2);
+
+    shape.currX = startX;
+    shape.currY = startY;
+
+    blocksInOrder(function(x, y, blockDef)
+        {
+            var block = nextShapeDisplay[shape.currY + y][shape.currX + x]
+            block.filled = blockDef;
+            block.colour = blockDef ? shape.colour : block.colour;
+            block.render();
+        }, this, shape);
+}
+
+function addShape(shape)
+{
+    activeShape = shape;
     var startX = Math.floor((DIMENSION_X - activeShape.width()) / 2);
     var startY = HIDDEN_ROWS - activeShape.height() - 1;
 
@@ -417,7 +437,6 @@ function doGameOver()
 
 function isGameOver()
 {
-    console.log("checking game over");
     return _.some(cleanBoardView(HIDDEN_ROWS - 1), function(block)
     {
         return block.filled;
@@ -426,6 +445,8 @@ function isGameOver()
 
 function gameLoop()
 {
+    if (isNewGame) nextShape = newRandomShape();
+
     if (isNewGame || isActiveShapeSettled())
     {
         isNewGame = false;
@@ -434,7 +455,9 @@ function gameLoop()
             doGameOver();
             return;
         }
-        addRandomShape();
+        addShape(nextShape);
+        nextShape = newRandomShape();
+        displayNextShape(nextShape);
         completeRows();
     }
 
@@ -474,6 +497,51 @@ function drop()
 
 function drawGameBoard()
 {
+    var boardWidth = DIMENSION_X * BLOCK_SIZE;
+    var boardHeight = DIMENSION_Y * BLOCK_SIZE;
+    var blockWidth = (BLOCK_SIZE - (2 * BORDER_WIDTH));
+
+    $GAME_ROOT.css("width", boardWidth);
+
+    var $scoreCard = $(
+        "<div id='scoreCard'>" +
+            "<p id='scoreRows'>Rows:</p>" +
+            "<p id='scoreScore'>Score:</p>" +
+            "<p id='scoreLevel'>Level:</p>" +
+        "</div>");
+    $GAME_ROOT.append($scoreCard);
+
+    var nextShapeBorderWidth = Math.floor(BORDER_WIDTH / 2);
+    var nextShapeBlockSize =  Math.floor(BLOCK_SIZE / 2) - (2 * nextShapeBorderWidth);
+    var nextShapeDisplayDimension = 4;
+    var nextShapeDisplaySize = nextShapeDisplayDimension * nextShapeBlockSize;
+
+    var $nextShapeDisplay = $("<div id='nextShape' />")
+    $nextShapeDisplay.css("width", nextShapeDisplaySize);
+    $nextShapeDisplay.css("height", nextShapeDisplaySize);
+    $GAME_ROOT.append($nextShapeDisplay);
+    for (var y = 0; y < nextShapeDisplayDimension; y++)
+    {
+        nextShapeDisplay[y] = [];
+        for (var x = 0; x < nextShapeDisplayDimension; x++)
+        {
+            var block = _.extend(
+                {
+                    filled: false,
+                    colour: BOARD_COLOUR,
+                    $elem: $("<div class='block' />"),
+                }, blockProto);
+            block.$elem.css("width", nextShapeBlockSize);
+            block.$elem.css("height", nextShapeBlockSize);
+            block.$elem.css("border-width", nextShapeBorderWidth);
+            block.$elem.css("border-style", "outset");
+            $nextShapeDisplay.append(block.$elem);
+            nextShapeDisplay[y][x] = block;
+            block.render();
+        }
+
+    }
+
     var $gameBoard = $("<div id='gameBoard' />");
     $gameBoard.width(DIMENSION_X * BLOCK_SIZE);
     $gameBoard.height(DIMENSION_Y * BLOCK_SIZE);
