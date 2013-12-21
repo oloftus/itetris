@@ -1,23 +1,37 @@
-/********************
-    CONFIGURATION   */
+var includeScripts =
+[
+    "config.js"
+];
 
-var DIMENSION_X = 10; //blocks
-var DIMENSION_Y = 20; //blocks
-var GAME_SPEED = 1000; //millliseconds
-var BORDER_WIDTH = 3; //pixels
+$(function()
+{
+    var scriptsLoadedCount = 0;
 
-/********************/
+    function startIfAllScriptsLoaded()
+    {
+        scriptsLoadedCount++;
+        if (scriptsLoadedCount === includeScripts.length)
+        {
+            main();
+        }
+    }
 
+    _.each(includeScripts, function(includeScript) {
+        $.getScript(includeScript, function() { startIfAllScriptsLoaded(); });
+    });
+});
+
+var main = function()
+{
 
 /**** GLOBALS ****/
-
 var BOARD_COLOUR = "transparent"
 var HIDDEN_ROWS = 5;
 var EXTENT_Y = DIMENSION_Y + HIDDEN_ROWS;
-$(function(){
-    BLOCK_SIZE = Math.ceil(Math.min($(document).width() / DIMENSION_X, $(document).height() / DIMENSION_Y) - 1);
-    $GAME_ROOT = $("#iTetris");
-});
+
+var BLOCK_SIZE = Math.ceil(Math.min($(document).width() / DIMENSION_X, $(document).height() / DIMENSION_Y) - 1);
+var $GAME_ROOT = $("#iTetris");
+
 
 var BLOCKED = 
 {
@@ -74,11 +88,11 @@ function rotateShape(shape, angle)
 
 function cleanBoardView(y, x)
 {
-    if (typeof x === "undefined")
+    if (_.isUndefined(x))
     {
         return _.map(gameBoard[y], function(block, x)
         {
-            if (typeof activeShape !== "undefined" &&
+            if (!_.isUndefined(activeShape) &&
                 activeShape.currX <= x && x < activeShape.currX + activeShape.width() &&
                 activeShape.currY <= y && y < activeShape.currY + activeShape.height())
             {
@@ -690,10 +704,10 @@ function setupTouchBindings()
     });
 }
 
-$(function()
-{
-    drawGameBoard();
-    setupKeyBindings();
-    setupTouchBindings();
-    gameLoop();
-});
+
+drawGameBoard();
+setupKeyBindings();
+setupTouchBindings();
+gameLoop();
+
+};
