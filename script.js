@@ -497,11 +497,17 @@ function drop()
 
 function drawGameBoard()
 {
-    var boardWidth = DIMENSION_X * BLOCK_SIZE;
-    var boardHeight = DIMENSION_Y * BLOCK_SIZE;
-    var blockWidth = (BLOCK_SIZE - (2 * BORDER_WIDTH));
+    var BOARD_WIDTH = DIMENSION_X * BLOCK_SIZE;
+    var BOARD_HEIGHT = DIMENSION_Y * BLOCK_SIZE;
+    var BLOCK_WIDTH = (BLOCK_SIZE - (2 * BORDER_WIDTH));
 
-    $GAME_ROOT.css("width", boardWidth);
+    var NEXT_SHAPE_BLOCK_SIZE = Math.floor(BLOCK_SIZE / 2);
+    var NEXT_SHAPE_BORDER_WIDTH = Math.floor(BORDER_WIDTH / 2);
+    var NEXT_SHAPE_BLOCK_WIDTH =  NEXT_SHAPE_BLOCK_SIZE - (2 * NEXT_SHAPE_BORDER_WIDTH);
+    var NEXT_SHAPE_DISPLAY_DIMENSION = 4;
+    var NEXT_SHAPE_DISPLAY_WIDTH = NEXT_SHAPE_DISPLAY_DIMENSION * NEXT_SHAPE_BLOCK_SIZE;
+
+    $GAME_ROOT.width(BOARD_WIDTH);
 
     var $scoreCard = $(
         "<div id='scoreCard'>" +
@@ -511,19 +517,14 @@ function drawGameBoard()
         "</div>");
     $GAME_ROOT.append($scoreCard);
 
-    var nextShapeBorderWidth = Math.floor(BORDER_WIDTH / 2);
-    var nextShapeBlockSize =  Math.floor(BLOCK_SIZE / 2) - (2 * nextShapeBorderWidth);
-    var nextShapeDisplayDimension = 4;
-    var nextShapeDisplaySize = nextShapeDisplayDimension * nextShapeBlockSize;
-
     var $nextShapeDisplay = $("<div id='nextShape' />")
-    $nextShapeDisplay.css("width", nextShapeDisplaySize);
-    $nextShapeDisplay.css("height", nextShapeDisplaySize);
+    $nextShapeDisplay.css("width", NEXT_SHAPE_DISPLAY_WIDTH);
+    $nextShapeDisplay.css("height", NEXT_SHAPE_DISPLAY_WIDTH);
     $GAME_ROOT.append($nextShapeDisplay);
-    for (var y = 0; y < nextShapeDisplayDimension; y++)
+    for (var y = 0; y < NEXT_SHAPE_DISPLAY_DIMENSION; y++)
     {
         nextShapeDisplay[y] = [];
-        for (var x = 0; x < nextShapeDisplayDimension; x++)
+        for (var x = 0; x < NEXT_SHAPE_DISPLAY_DIMENSION; x++)
         {
             var block = _.extend(
                 {
@@ -531,20 +532,19 @@ function drawGameBoard()
                     colour: BOARD_COLOUR,
                     $elem: $("<div class='block' />"),
                 }, blockProto);
-            block.$elem.css("width", nextShapeBlockSize);
-            block.$elem.css("height", nextShapeBlockSize);
-            block.$elem.css("border-width", nextShapeBorderWidth);
+            block.$elem.css("width", NEXT_SHAPE_BLOCK_WIDTH);
+            block.$elem.css("height", NEXT_SHAPE_BLOCK_WIDTH);
+            block.$elem.css("border-width", NEXT_SHAPE_BORDER_WIDTH);
             block.$elem.css("border-style", "outset");
             $nextShapeDisplay.append(block.$elem);
             nextShapeDisplay[y][x] = block;
             block.render();
         }
-
     }
 
     var $gameBoard = $("<div id='gameBoard' />");
-    $gameBoard.width(DIMENSION_X * BLOCK_SIZE);
-    $gameBoard.height(DIMENSION_Y * BLOCK_SIZE);
+    $gameBoard.width(BOARD_WIDTH);
+    $gameBoard.height(BOARD_HEIGHT);
     $("#iTetris").append($gameBoard);
 
     for (var y = 0; y < EXTENT_Y; y++)
@@ -558,8 +558,8 @@ function drawGameBoard()
                     colour: BOARD_COLOUR,
                     $elem: $("<div class='block' />"),
                 }, blockProto);
-            block.$elem.width(BLOCK_SIZE - (2 * BORDER_WIDTH));
-            block.$elem.height(BLOCK_SIZE - (2 * BORDER_WIDTH));
+            block.$elem.width(BLOCK_WIDTH);
+            block.$elem.height(BLOCK_WIDTH);
             block.$elem.css("border-width", BORDER_WIDTH);
             block.$elem.css("border-style", "outset");
             $gameBoard.append(block.$elem);
