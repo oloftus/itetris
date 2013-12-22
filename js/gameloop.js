@@ -67,13 +67,14 @@ function completeRows()
 function doGameOver()
 {
     gameIsOver = true;
+    alert("GAME OVER");
 }
 
 function isGameOver()
 {
     return _.some(cleanBoardView(HIDDEN_ROWS - 1), function(block)
     {
-        return block.filled;
+        return block;
     });
 }
 
