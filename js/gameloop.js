@@ -53,7 +53,7 @@ function completeRows()
             {
                 for (var x = 0; x < DIMENSION_X; x++)
                 {
-                    if (gameBoard[iy][x].filled === cleanBoardView(iy, x)) // Don't touch the active shape
+                    if (gameBoard[iy][x].filled === cleanBoardView(iy, x))
                     {
                         var block = gameBoard[iy][x];
                         block.filled = iy === 0 ? false : cleanBoardView(iy - 1, x);
@@ -65,6 +65,17 @@ function completeRows()
             y++;
         }
     }
+
+    var consecutiveRows = 0;
+    _.each(completedRows, function(complete)
+    {
+        if (complete) consecutiveRows++;
+        else
+        {
+            updateRows(consecutiveRows);
+            consecutiveRows = 0;
+        }
+    });
 }
 
 function doGameOver()

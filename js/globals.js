@@ -19,6 +19,7 @@ var gameLoopTimer;
 var currSpeed = GAME_SPEED;
 var currLevel = 1;
 var currScore = 0;
+var currRows = 0;
 
 var activeShape;
 var lastShape;

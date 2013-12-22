@@ -18,11 +18,12 @@ function drawGameBoard()
 
     var $scoreCard = $(
         "<div id='scoreCard'>" +
-            "<p id='scoreRows'>R:</p>" +
-            "<p id='scoreScore'>S:</p>" +
-            "<p id='scoreLevel'>L:</p>" +
+            "<p>R: <span id='scoreRows' /></p>" +
+            "<p>S: <span id='scoreScore' /></p>" +
+            "<p>L: <span id='scoreLevel' /></p>" +
         "</div>");
     $GAME_ROOT.append($scoreCard);
+    updateScores();
 
     var $nextShapeDisplay = $("<div id='nextShape' />")
     $nextShapeDisplay.css("width", NEXT_SHAPE_DISPLAY_WIDTH);
