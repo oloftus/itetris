@@ -11,37 +11,25 @@ function newRandomShape()
 
 function displayNextShape(shape)
 {
-    var startX = Math.floor((4 - shape.width()) / 2);
-    var startY = Math.floor(shape.height() / 2);
-
-    shape.currX = startX;
-    shape.currY = startY;
-
-    blocksInOrder(function(x, y, blockDef)
-        {
-            var block = nextShapeDisplay[shape.currY + y][shape.currX + x]
-            block.filled = blockDef;
-            block.colour = blockDef ? shape.colour : block.colour;
-            block.render();
-        }, this, shape);
+    if (oldNextShape) oldNextShape.clear();
+    nextShape = _.extend({}, shape);
+    nextShape.container = nextShapeDisplay;
+    var startX = Math.floor((NEXT_SHAPE_DISPLAY_DIMENSION - nextShape.width()) / 2);
+    var startY = Math.floor((NEXT_SHAPE_DISPLAY_DIMENSION - nextShape.height()) / 2);
+    nextShape.currX = startX;
+    nextShape.currY = startY;
+    nextShape.draw();
 }
 
-function addShape(shape)
+function addShapeToBoard(shape)
 {
-    activeShape = shape;
+    activeShape = _.extend({}, shape);
+    activeShape.container = gameBoard;
     var startX = Math.floor((DIMENSION_X - activeShape.width()) / 2);
     var startY = HIDDEN_ROWS - activeShape.height() - 1;
-
     activeShape.currX = startX;
     activeShape.currY = startY;
-
-    blocksInOrder(function(x, y, blockDef)
-        {
-            var block = gameBoard[activeShape.currY + y][activeShape.currX + x]
-            block.filled = blockDef;
-            block.colour = blockDef ? activeShape.colour : block.colour;
-            block.render();
-        }, this, activeShape);
+    activeShape.draw();
 }
 
 function completeRows()
@@ -101,9 +89,9 @@ function gameLoop()
             doGameOver();
             return;
         }
-        addShape(nextShape);
-        nextShape = newRandomShape();
-        displayNextShape(nextShape);
+        addShapeToBoard(nextShape);
+        displayNextShape(newRandomShape());
+        oldNextShape = nextShape;
         completeRows();
     }
 

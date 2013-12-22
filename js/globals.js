@@ -18,6 +18,7 @@ var currSpeed = GAME_SPEED;
 var gameLoopTimer;
 
 var activeShape;
+var oldNextShape;
 var nextShape;
 var gameBoard = [];
 var nextShapeDisplay = [];

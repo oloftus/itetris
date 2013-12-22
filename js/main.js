@@ -25,8 +25,15 @@ $(function()
         }
     }
 
+    function getScript(scriptPath, callback)
+    {
+        var $script = $("<script src='" + scriptPath + "'type='text/javascript' />");
+        $("head").append($script);
+        callback();
+    }
+
     _.each(includeScripts, function(includeScript) {
         var scriptPath = scriptDir + "/" + includeScript;
-        $.getScript(scriptPath, function() { startIfAllScriptsLoaded(); });
+        getScript(scriptPath, function() { startIfAllScriptsLoaded(); });
     });
 });

@@ -24,7 +24,7 @@ var shapeProto =
     {
         blocksInOrder(function(x, y, blockDef)
             {
-                var gameBlock = gameBoard[this.currY + y][this.currX + x];
+                var gameBlock = this.container[this.currY + y][this.currX + x];
                 gameBlock.filled = blockDef | gameBlock.filled;
                 gameBlock.colour = blockDef ? this.colour : gameBlock.colour;
                 gameBlock.render();
@@ -35,7 +35,7 @@ var shapeProto =
     {
         blocksInOrder(function(x, y, blockDef)
             {
-                var gameBlock = gameBoard[this.currY + y][this.currX + x];
+                var gameBlock = this.container[this.currY + y][this.currX + x];
                 gameBlock.filled = blockDef ? false : gameBlock.filled;
                 gameBlock.colour = blockDef ? BOARD_COLOUR : gameBlock.colour;
                 gameBlock.render();
