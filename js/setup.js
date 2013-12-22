@@ -2,22 +2,25 @@
 
 function drawGameBoard()
 {
-    var BOARD_WIDTH = DIMENSION_X * BLOCK_SIZE;
-    var BOARD_HEIGHT = DIMENSION_Y * BLOCK_SIZE;
-    var BLOCK_WIDTH = (BLOCK_SIZE - (2 * BORDER_WIDTH));
-
-    var NEXT_SHAPE_BLOCK_SIZE = Math.floor(BLOCK_SIZE / 2);
-    var NEXT_SHAPE_BORDER_WIDTH = Math.floor(BORDER_WIDTH / 2);
+    var NEXT_SHAPE_BLOCK_SIZE = Math.floor(BLOCK_SIZE / 3);
+    var NEXT_SHAPE_BORDER_WIDTH = Math.floor(BORDER_WIDTH / 3);
     var NEXT_SHAPE_BLOCK_WIDTH =  NEXT_SHAPE_BLOCK_SIZE - (2 * NEXT_SHAPE_BORDER_WIDTH);
     var NEXT_SHAPE_DISPLAY_WIDTH = NEXT_SHAPE_DISPLAY_DIMENSION * NEXT_SHAPE_BLOCK_SIZE;
 
+    var NEXT_SHAPE_PADDING = 20;
+    var IPHONE_BAR_HEIGHT = 10;
+    var ADJUSTED_BLOCK_SIZE = (BLOCK_SIZE - Math.floor((NEXT_SHAPE_DISPLAY_WIDTH + NEXT_SHAPE_PADDING + IPHONE_BAR_HEIGHT) / DIMENSION_Y));
+    var BOARD_WIDTH = DIMENSION_X * ADJUSTED_BLOCK_SIZE;
+    var BOARD_HEIGHT = DIMENSION_Y * ADJUSTED_BLOCK_SIZE;
+    var BLOCK_WIDTH = (ADJUSTED_BLOCK_SIZE - (2 * BORDER_WIDTH));
+    
     $GAME_ROOT.width(BOARD_WIDTH);
 
     var $scoreCard = $(
         "<div id='scoreCard'>" +
-            "<p id='scoreRows'>Rows:</p>" +
-            "<p id='scoreScore'>Score:</p>" +
-            "<p id='scoreLevel'>Level:</p>" +
+            "<p id='scoreRows'>R:</p>" +
+            "<p id='scoreScore'>S:</p>" +
+            "<p id='scoreLevel'>L:</p>" +
         "</div>");
     $GAME_ROOT.append($scoreCard);
 
@@ -68,7 +71,6 @@ function drawGameBoard()
             block.$elem.css("border-style", "outset");
             $gameBoard.append(block.$elem);
             gameBoard[y][x] = block;
-
             if (y < HIDDEN_ROWS) block.$elem.hide();
             block.render();
         }
@@ -144,7 +146,7 @@ function setupTouchBindings()
     hammertime.on("tap", function(e)
     {
         rotate();
-        e.preventDefault();
+        //e.preventDefault();
     });
 
     hammertime.on("drag", function(e)

@@ -49,7 +49,7 @@ function completeRows()
 
         if (_.last(completedRows) === 1)
         {
-            for (var iy = y; iy >= 0 ; iy--)
+            for (var iy = y; iy >= 0; iy--)
             {
                 for (var x = 0; x < DIMENSION_X; x++)
                 {

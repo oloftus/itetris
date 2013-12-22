@@ -8,6 +8,7 @@ var includeScripts =
     "activeshape.js",
     "gameloop.js",
     "controls.js",
+    "scoring.js",
     "setup.js",
     "boot.js"
 ];
