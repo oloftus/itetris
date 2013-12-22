@@ -11,7 +11,7 @@ function newRandomShape()
 
 function displayNextShape(shape)
 {
-    if (oldNextShape) oldNextShape.clear();
+    if (lastShape) lastShape.clear();
     nextShape = _.extend({}, shape);
     nextShape.container = nextShapeDisplay;
     var startX = Math.floor((NEXT_SHAPE_DISPLAY_DIMENSION - nextShape.width()) / 2);
@@ -47,16 +47,19 @@ function completeRows()
             if (x === DIMENSION_X - 1) completedRows.push(1);
         }
 
-        if (_.last(completedRows) === 1)
+        if (_.last(completedRows))
         {
             for (var iy = y; iy >= 0; iy--)
             {
                 for (var x = 0; x < DIMENSION_X; x++)
                 {
-                    var block = gameBoard[iy][x];
-                    block.filled = iy === 0 ? false : cleanBoardView(iy - 1, x);
-                    block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : BOARD_COLOUR;
-                    block.render();
+                    if (gameBoard[iy][x].filled === cleanBoardView(iy, x)) // Don't touch the active shape
+                    {
+                        var block = gameBoard[iy][x];
+                        block.filled = iy === 0 ? false : cleanBoardView(iy - 1, x);
+                        block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : BOARD_COLOUR;
+                        block.render();
+                    }
                 }
             }
             y++;
@@ -92,7 +95,7 @@ function gameLoop()
         }
         addShapeToBoard(nextShape);
         displayNextShape(newRandomShape());
-        oldNextShape = nextShape;
+        lastShape = nextShape;
         completeRows();
     }
 

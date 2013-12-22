@@ -21,7 +21,7 @@ var currLevel = 1;
 var currScore = 0;
 
 var activeShape;
-var oldNextShape;
+var lastShape;
 var nextShape;
 var gameBoard = [];
 var nextShapeDisplay = [];
