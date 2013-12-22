@@ -16,6 +16,9 @@ var BLOCKED =
 var isNewGame = true;
 var gameLoopTimer;
 
+var scoreTimerStart;
+var scoreTimer;
+
 var currSpeed = GAME_SPEED;
 var currLevel = 1;
 var currScore = 0;

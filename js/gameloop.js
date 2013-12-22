@@ -81,6 +81,7 @@ function completeRows()
 function doGameOver()
 {
     gameIsOver = true;
+    clearInterval(scoreTimer);
     alert("GAME OVER");
 }
 

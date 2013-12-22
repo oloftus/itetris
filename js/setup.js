@@ -193,3 +193,26 @@ function setupTouchBindings()
         e.preventDefault();
     });
 }
+
+function setupGameTimer()
+{
+    scoreTimerStart = new Date().getTime();
+    scoreTimer = setInterval(function()
+        {
+            var currTime = new Date().getTime();
+            var timeDelta = currTime - scoreTimerStart;
+            if (timeDelta > LEVEL_ROLLOVER)
+            {
+                currLevel += 1;
+                currSpeed = 0.8 * currSpeed;
+                scoreTimerStart = currTime;
+                updateScores();
+            }
+        }, 100);
+}
+
+function setupGame()
+{
+    setupGameTimer();
+    gameLoop();
+}
