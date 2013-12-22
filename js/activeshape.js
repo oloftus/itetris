@@ -65,8 +65,8 @@ function translateActiveShape(x, y, isGameLoop)
     var proposedY = activeShape.currY + y;
 
     if ((isBlockHidden() && !isGameLoop) ||
-        proposedX < 0 || proposedX + activeShape.width() - 1 >= DIMENSION_X  ||
-        proposedY < 0 || proposedY + activeShape.height() - 1 >= EXTENT_Y ||
+        proposedX < 0 || proposedX + activeShape.width() > DIMENSION_X  ||
+        proposedY < 0 || proposedY + activeShape.height() > EXTENT_Y ||
         (y && isActiveShapeSettled()) ||
         (x && isActiveShapeBlocked(x > 0 ? BLOCKED.RIGHT : BLOCKED.LEFT))) return;
 
@@ -100,6 +100,8 @@ function rotateActiveShape(angle)
 
 function dropActiveShape()
 {
+    if (proposedY + activeShape.height() > EXTENT_Y) return;
+
     var currMin = EXTENT_Y + 1000;
 
     for (var x = 0; x < activeShape.width(); x++)
