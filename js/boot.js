@@ -5,5 +5,6 @@ function boot()
     drawGameBoard();
     setupKeyBindings();
     setupTouchBindings();
-    setupGame();
+    setupDialogBindings();
+    showDialog(TEMPLATES.NEWGAME, false);
 }

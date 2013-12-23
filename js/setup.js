@@ -211,8 +211,21 @@ function setupGameTimer()
         }, 100);
 }
 
+function setupDialogBindings()
+{
+    var setupNewGame = function()
+    {
+        closeDialog(this);
+        setupGame();
+    }
+
+    $("#restart-game-button").click(setupNewGame);
+    $("#new-game-button").click(setupNewGame);
+}
+
 function setupGame()
 {
     setupGameTimer();
+    isNewGame = true;
     gameLoop();
 }

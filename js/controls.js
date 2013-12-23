@@ -24,3 +24,18 @@ function drop()
 {
     dropActiveShape();
 }
+
+function pauseGame()
+{
+    clearTimeout(gameLoopTimer);
+    gamePaused = true;
+}
+
+function unpauseGame()
+{
+    if (gamePaused)
+    {
+        gamePaused = false;
+        gameLoop();
+    }
+}

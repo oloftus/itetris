@@ -13,8 +13,16 @@ var BLOCKED =
     RIGHT: "right"
 }
 
-var isNewGame = true;
+var TEMPLATES = 
+{
+    NEWGAME: "newgame"
+}
+
+var openDialogIds = [];
+
+var isNewGame;
 var gameLoopTimer;
+var gamePaused;
 
 var scoreTimerStart;
 var scoreTimer;

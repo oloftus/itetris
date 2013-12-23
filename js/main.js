@@ -4,6 +4,7 @@ var includeScripts =
     "config.js",
     "globals.js",
     "util.js",
+    "dialogs.js",
     "shapesblocks.js",
     "activeshape.js",
     "gameloop.js",
