@@ -119,11 +119,11 @@ function breakGameLoop()
 
 function setupDialogTemplates()
 {
-    _.each(templates, function(templateName)
+    _.each(dialogTemplates, function(templateName)
     {
-        $templates[templateName] = $("#template-" + templateName);
+        $dialogTemplates[templateName] = $("#template-" + templateName);
     });
-    $("#templates").detach();
+    $("#dialogTemplates").detach();
 }
 
 function setupGame()
@@ -158,5 +158,5 @@ function boot()
     preventIphonePanning();
     drawGameBoard();
     setupDialogTemplates();
-    showDialog(templates.newGame, false);
+    showDialog(dialogTemplates.newGame, false);
 }

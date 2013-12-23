@@ -72,10 +72,10 @@ function setupTouchBindings()
 {
     var hammertime = $("#iTetris").hammer()
 
-    var DIRECTION =
+    var directions =
     {
-        LEFT: "left",
-        RIGHT: "Right"
+        left: "left",
+        right: "Right"
     }
 
     var blocksMovedX;
@@ -108,11 +108,11 @@ function setupTouchBindings()
     hammertime.on("drag", function(e)
     {
         var deltaX = e.gesture.deltaX;
-        var direction = deltaX < initPosX ? DIRECTION.LEFT : DIRECTION.RIGHT;
+        var direction = deltaX < initPosX ? directions.left : directions.right;
 
         if (Math.abs(deltaX - initPosX) <= Math.abs(lastDeltaX - initPosX))
         {
-            direction = direction === DIRECTION.LEFT ? DIRECTION.RIGHT : DIRECTION.LEFT;
+            direction = direction === directions.left ? directions.right : directions.left;
             initPosX = deltaX;
             blocksMovedX = 0;
         }
@@ -122,10 +122,10 @@ function setupTouchBindings()
         {
             switch (direction)
             {
-                case DIRECTION.LEFT:
+                case directions.left:
                     moveLeft();
                     break;
-                case DIRECTION.RIGHT:
+                case directions.right:
                     moveRight();
                     break;
             }

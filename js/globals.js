@@ -13,7 +13,7 @@ var blocked =
     right: "right"
 }
 
-var templates = 
+var dialogTemplates = 
 {
     newGame: "newgame",
     gameOver: "gameover"
@@ -21,7 +21,7 @@ var templates =
 
 var controlsActive;
 
-var $templates = {};
+var $dialogTemplates = {};
 var openDialogIds = [];
 
 var isNewGame;

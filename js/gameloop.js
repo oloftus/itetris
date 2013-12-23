@@ -82,7 +82,7 @@ function doGameOver()
 {
     pauseGameTimer();
     clearControls();
-    showDialog(templates.gameOver, false);
+    showDialog(dialogTemplates.gameOver, false);
 }
 
 function isGameOver()

@@ -15,7 +15,7 @@ function showDialog(templateName, pause)
     }
     openDialogIds.push(dialogId);
 
-    var $template = $templates[templateName].clone();
+    var $template = $dialogTemplates[templateName].clone();
     var $dialog = $(
         "<div class='dialog' id='dialog-" + dialogId + "'>" +
             "<div class='inner' />" +
