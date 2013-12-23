@@ -2,9 +2,9 @@
 
 function clearGameBoard()
 {
-    $("#scoreCard").remove();
-    $("#nextShape").remove();
-    $("#gameBoard").remove();
+    $("#score-card").remove();
+    $("#next-shape").remove();
+    $("#game-board").remove();
 }
 
 function drawGameBoard()
@@ -22,18 +22,19 @@ function drawGameBoard()
     $gameRoot.width(boardWidth);
 
     var $scoreCard = $(
-        "<div id='scoreCard'>" +
-            "<p>R: <span id='scoreRows' /></p>" +
-            "<p>S: <span id='scoreScore' /></p>" +
-            "<p>L: <span id='scoreLevel' /></p>" +
+        "<div id='score-card'>" +
+            "<p>R: <span id='score-rows' /></p>" +
+            "<p>S: <span id='score-score' /></p>" +
+            "<p>L: <span id='score-level' /></p>" +
         "</div>");
     $gameRoot.append($scoreCard);
     updateScores();
 
-    var $nextShapeDisplay = $("<div id='nextShape' />")
+    var $nextShapeDisplay = $("<div id='next-shape' />")
     $nextShapeDisplay.css("width", nextShapeDisplayWidth);
     $nextShapeDisplay.css("height", nextShapeDisplayWidth);
     $gameRoot.append($nextShapeDisplay);
+
     for (var y = 0; y < nextShapeDisplayDimension; y++)
     {
         nextShapeDisplay[y] = [];
@@ -55,10 +56,10 @@ function drawGameBoard()
         }
     }
 
-    var $gameBoard = $("<div id='gameBoard' />");
+    var $gameBoard = $("<div id='game-board' />");
     $gameBoard.width(boardWidth);
     $gameBoard.height(boardHeight);
-    $("#iTetris").append($gameBoard);
+    $gameRoot.append($gameBoard);
 
     for (var y = 0; y < extentY; y++)
     {
@@ -145,7 +146,7 @@ function setupGame()
 
 function preventIphonePanning()
 {
-    var hammertime = $("#iTetris").hammer()
+    var hammertime = $("#itetris").hammer()
 
     hammertime.on("touchmove", function(e)
     {

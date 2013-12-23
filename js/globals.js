@@ -5,7 +5,7 @@ var hiddenRows = 5;
 var extentY = dimensionY + hiddenRows;
 
 var blockSize = Math.ceil(Math.min($(document).width() / dimensionX, $(document).height() / dimensionY) - 1);
-var $gameRoot = $("#iTetris");
+var $gameRoot = $("#itetris");
 
 var blocked = 
 {

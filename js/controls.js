@@ -60,7 +60,7 @@ function setupKeyBindings()
 
 function clearTouchBindings()
 {
-    var hammertime = $("#iTetris").hammer();
+    var hammertime = $("#itetris").hammer();
     hammertime.off("dragend");
     hammertime.off("swipedown");
     hammertime.off("tap");
@@ -70,7 +70,7 @@ function clearTouchBindings()
 
 function setupTouchBindings()
 {
-    var hammertime = $("#iTetris").hammer()
+    var hammertime = $("#itetris").hammer()
 
     var directions =
     {
