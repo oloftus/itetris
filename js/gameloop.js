@@ -14,8 +14,8 @@ function displayNextShape(shape)
     if (lastShape) lastShape.clear();
     nextShape = _.extend({}, shape);
     nextShape.container = nextShapeDisplay;
-    var startX = Math.floor((NEXT_SHAPE_DISPLAY_DIMENSION - nextShape.width()) / 2);
-    var startY = Math.floor((NEXT_SHAPE_DISPLAY_DIMENSION - nextShape.height()) / 2);
+    var startX = Math.floor((nextShapeDisplayDimension - nextShape.width()) / 2);
+    var startY = Math.floor((nextShapeDisplayDimension - nextShape.height()) / 2);
     nextShape.currX = startX;
     nextShape.currY = startY;
     nextShape.draw();
@@ -25,8 +25,8 @@ function addShapeToBoard(shape)
 {
     activeShape = _.extend({}, shape);
     activeShape.container = gameBoard;
-    var startX = Math.floor((DIMENSION_X - activeShape.width()) / 2);
-    var startY = HIDDEN_ROWS - activeShape.height() - 1;
+    var startX = Math.floor((dimensionX - activeShape.width()) / 2);
+    var startY = hiddenRows - activeShape.height() - 1;
     activeShape.currX = startX;
     activeShape.currY = startY;
     activeShape.draw();
@@ -35,29 +35,29 @@ function addShapeToBoard(shape)
 function completeRows()
 {
     var completedRows = [];
-    for (var y = EXTENT_Y - 1 ; y >= 0 ; y--)
+    for (var y = extentY - 1 ; y >= 0 ; y--)
     {
-        for (var x = 0; x < DIMENSION_X; x++)
+        for (var x = 0; x < dimensionX; x++)
         {
             if (!cleanBoardView(y, x))
             {
                 completedRows.push(0);
                 break;
             }
-            if (x === DIMENSION_X - 1) completedRows.push(1);
+            if (x === dimensionX - 1) completedRows.push(1);
         }
 
         if (_.last(completedRows))
         {
             for (var iy = y; iy >= 0; iy--)
             {
-                for (var x = 0; x < DIMENSION_X; x++)
+                for (var x = 0; x < dimensionX; x++)
                 {
                     if (gameBoard[iy][x].filled === cleanBoardView(iy, x))
                     {
                         var block = gameBoard[iy][x];
                         block.filled = iy === 0 ? false : cleanBoardView(iy - 1, x);
-                        block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : BOARD_COLOUR;
+                        block.colour = block.filled && iy !== 0 ? gameBoard[iy - 1][x].colour : boardColour;
                         block.render();
                     }
                 }
@@ -82,12 +82,12 @@ function doGameOver()
 {
     pauseGameTimer();
     clearControls();
-    showDialog(TEMPLATES.GAMEOVER, false);
+    showDialog(templates.gameOver, false);
 }
 
 function isGameOver()
 {
-    return _.some(cleanBoardView(HIDDEN_ROWS - 1), function(block)
+    return _.some(cleanBoardView(hiddenRows - 1), function(block)
     {
         return block;
     });

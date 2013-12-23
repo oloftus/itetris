@@ -12,12 +12,22 @@ function updateScores()
 
 function updateRows(consecutiveRows)
 {
+    // Scoring guidelines: http://www.tetrisfriends.com/help/tips_appendix.php#scoringchart
     switch (consecutiveRows)
     {
-        default:
-            currRows += consecutiveRows;
-            currScore += consecutiveRows * 1;
+        case 1:
+            currScore += currLevel * 100;
+            break;
+        case 2:
+            currScore += currLevel * 300;
+            break;
+        case 3:
+            currScore += currLevel * 500;
+            break;
+        case 4:
+            currScore += currLevel * 800;
             break;
     }
+    currRows += consecutiveRows;
     updateScores();
 }

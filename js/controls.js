@@ -117,8 +117,8 @@ function setupTouchBindings()
             blocksMovedX = 0;
         }
 
-        var distanceToMoveX = Math.abs(deltaX - initPosX) - blocksMovedX * BLOCK_SIZE;
-        if (distanceToMoveX >= BLOCK_SIZE)
+        var distanceToMoveX = Math.abs(deltaX - initPosX) - blocksMovedX * blockSize;
+        if (distanceToMoveX >= blockSize)
         {
             switch (direction)
             {
@@ -140,9 +140,9 @@ function setupTouchBindings()
     hammertime.on("dragdown", function(e)
     {
         var deltaY = e.gesture.deltaY;
-        var distanceToMoveY = Math.abs(deltaY) - blocksMovedY * BLOCK_SIZE;
+        var distanceToMoveY = Math.abs(deltaY) - blocksMovedY * blockSize;
         
-        if (distanceToMoveY >= BLOCK_SIZE)
+        if (distanceToMoveY >= blockSize)
         {
             moveDown();
             blocksMovedY++;
@@ -174,7 +174,7 @@ function pauseGame()
     pauseGameTimer();
     clearControls();
     gamePaused = true;
-    clearTimeout(gameLoopTimer);
+    breakGameLoop();
 }
 
 function unpauseGame()

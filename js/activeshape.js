@@ -6,7 +6,7 @@ function isActiveShapeBlocked(side)
     {
         switch (side)
         {
-            case BLOCKED.LEFT:
+            case blocked.left:
                 for (var x = 0; x < activeShape.width(); x++)
                 {
                     if (activeShape.definition[y][x])
@@ -19,7 +19,7 @@ function isActiveShapeBlocked(side)
                 }
                 break;
 
-            case BLOCKED.RIGHT:
+            case blocked.right:
                 for (var x = activeShape.width() - 1; x >= 0 ; x--)
                 {
                     if (activeShape.definition[y][x])
@@ -45,7 +45,7 @@ function isActiveShapeSettled()
             {
                 var boardX = activeShape.currX + x;
                 var boardY = activeShape.currY + y;
-                if (boardY >= EXTENT_Y - 1 || gameBoard[boardY + 1][boardX].filled)
+                if (boardY >= extentY - 1 || gameBoard[boardY + 1][boardX].filled)
                     return true
                 break;
             }
@@ -56,7 +56,7 @@ function isActiveShapeSettled()
 
 function isBlockHidden()
 {
-    return activeShape.currY + activeShape.height() - 1 < HIDDEN_ROWS;
+    return activeShape.currY + activeShape.height() - 1 < hiddenRows;
 }
 
 function translateActiveShape(x, y, isGameLoop)
@@ -65,10 +65,10 @@ function translateActiveShape(x, y, isGameLoop)
     var proposedY = activeShape.currY + y;
 
     if ((isBlockHidden() && !isGameLoop) ||
-        proposedX < 0 || proposedX + activeShape.width() > DIMENSION_X  ||
-        proposedY < 0 || proposedY + activeShape.height() > EXTENT_Y ||
+        proposedX < 0 || proposedX + activeShape.width() > dimensionX  ||
+        proposedY < 0 || proposedY + activeShape.height() > extentY ||
         (y && isActiveShapeSettled()) ||
-        (x && isActiveShapeBlocked(x > 0 ? BLOCKED.RIGHT : BLOCKED.LEFT))) return;
+        (x && isActiveShapeBlocked(x > 0 ? blocked.right : blocked.left))) return;
 
     activeShape.clear();
     activeShape.currX += x;
@@ -81,8 +81,8 @@ function rotateActiveShape(angle)
     var proposedShape = rotateShape(activeShape, angle);
 
     if (isBlockHidden() ||
-        activeShape.currX + proposedShape.width() > DIMENSION_X ||
-        activeShape.currY + proposedShape.height() > EXTENT_Y) return;
+        activeShape.currX + proposedShape.width() > dimensionX ||
+        activeShape.currY + proposedShape.height() > extentY) return;
 
     for (var y = 0; y < proposedShape.height(); y++)
     {
@@ -100,9 +100,9 @@ function rotateActiveShape(angle)
 
 function dropActiveShape()
 {
-    if (activeShape.currY + activeShape.height() > EXTENT_Y) return;
+    if (activeShape.currY + activeShape.height() > extentY) return;
 
-    var currMin = EXTENT_Y + 1000;
+    var currMin = extentY + 1000;
 
     for (var x = 0; x < activeShape.width(); x++)
     {
@@ -111,14 +111,14 @@ function dropActiveShape()
             if (activeShape.definition[y][x])
             {
                 var colMax;
-                for (var boardY = activeShape.currY + y + 1; boardY < EXTENT_Y; boardY++)
+                for (var boardY = activeShape.currY + y + 1; boardY < extentY; boardY++)
                 {
                     if (gameBoard[boardY][activeShape.currX + x].filled)
                     {
                         colMax = boardY - (activeShape.currY + y) - 1;
                         break;
                     }
-                    colMax = EXTENT_Y - activeShape.currY - activeShape.height();
+                    colMax = extentY - activeShape.currY - activeShape.height();
                 }
                 currMin = Math.min(currMin, colMax);
                 break;
@@ -127,6 +127,6 @@ function dropActiveShape()
     }
 
     translateActiveShape(0, currMin);
-    clearTimeout(gameLoopTimer);
+    breakGameLoop();
     gameLoop();
 }

@@ -9,17 +9,17 @@ function clearGameBoard()
 
 function drawGameBoard()
 {
-    var NEXT_SHAPE_BLOCK_SIZE = Math.floor(BLOCK_SIZE / 3);
-    var NEXT_SHAPE_BORDER_WIDTH = Math.floor(BORDER_WIDTH / 3);
-    var NEXT_SHAPE_BLOCK_WIDTH =  NEXT_SHAPE_BLOCK_SIZE - (2 * NEXT_SHAPE_BORDER_WIDTH);
-    var NEXT_SHAPE_DISPLAY_WIDTH = NEXT_SHAPE_DISPLAY_DIMENSION * NEXT_SHAPE_BLOCK_SIZE;
+    var nextShapeBlockSize = Math.floor(blockSize / 3);
+    var nextShapeBorderWidth = Math.floor(borderWidth / 3);
+    var nextShapeBlockWidth =  nextShapeBlockSize - (2 * nextShapeBorderWidth);
+    var nextShapeDisplayWidth = nextShapeDisplayDimension * nextShapeBlockSize;
 
-    var ADJUSTED_BLOCK_SIZE = (BLOCK_SIZE - Math.floor((NEXT_SHAPE_DISPLAY_WIDTH + NEXT_SHAPE_PADDING + IPHONE_BAR_HEIGHT + 10) / DIMENSION_Y));
-    var BOARD_WIDTH = DIMENSION_X * ADJUSTED_BLOCK_SIZE;
-    var BOARD_HEIGHT = DIMENSION_Y * ADJUSTED_BLOCK_SIZE;
-    var BLOCK_WIDTH = (ADJUSTED_BLOCK_SIZE - (2 * BORDER_WIDTH));
+    var adjustedBlockSize = (blockSize - Math.floor((nextShapeDisplayWidth + nextShapePadding + iphoneBarHeight + 10) / dimensionY));
+    var boardWidth = dimensionX * adjustedBlockSize;
+    var boardHeight = dimensionY * adjustedBlockSize;
+    var blockWidth = (adjustedBlockSize - (2 * borderWidth));
     
-    $GAME_ROOT.width(BOARD_WIDTH);
+    $gameRoot.width(boardWidth);
 
     var $scoreCard = $(
         "<div id='scoreCard'>" +
@@ -27,27 +27,27 @@ function drawGameBoard()
             "<p>S: <span id='scoreScore' /></p>" +
             "<p>L: <span id='scoreLevel' /></p>" +
         "</div>");
-    $GAME_ROOT.append($scoreCard);
+    $gameRoot.append($scoreCard);
     updateScores();
 
     var $nextShapeDisplay = $("<div id='nextShape' />")
-    $nextShapeDisplay.css("width", NEXT_SHAPE_DISPLAY_WIDTH);
-    $nextShapeDisplay.css("height", NEXT_SHAPE_DISPLAY_WIDTH);
-    $GAME_ROOT.append($nextShapeDisplay);
-    for (var y = 0; y < NEXT_SHAPE_DISPLAY_DIMENSION; y++)
+    $nextShapeDisplay.css("width", nextShapeDisplayWidth);
+    $nextShapeDisplay.css("height", nextShapeDisplayWidth);
+    $gameRoot.append($nextShapeDisplay);
+    for (var y = 0; y < nextShapeDisplayDimension; y++)
     {
         nextShapeDisplay[y] = [];
-        for (var x = 0; x < NEXT_SHAPE_DISPLAY_DIMENSION; x++)
+        for (var x = 0; x < nextShapeDisplayDimension; x++)
         {
             var block = _.extend(
                 {
                     filled: false,
-                    colour: BOARD_COLOUR,
+                    colour: boardColour,
                     $elem: $("<div class='block' />"),
                 }, blockProto);
-            block.$elem.css("width", NEXT_SHAPE_BLOCK_WIDTH);
-            block.$elem.css("height", NEXT_SHAPE_BLOCK_WIDTH);
-            block.$elem.css("border-width", NEXT_SHAPE_BORDER_WIDTH);
+            block.$elem.css("width", nextShapeBlockWidth);
+            block.$elem.css("height", nextShapeBlockWidth);
+            block.$elem.css("border-width", nextShapeBorderWidth);
             block.$elem.css("border-style", "outset");
             $nextShapeDisplay.append(block.$elem);
             nextShapeDisplay[y][x] = block;
@@ -56,28 +56,28 @@ function drawGameBoard()
     }
 
     var $gameBoard = $("<div id='gameBoard' />");
-    $gameBoard.width(BOARD_WIDTH);
-    $gameBoard.height(BOARD_HEIGHT);
+    $gameBoard.width(boardWidth);
+    $gameBoard.height(boardHeight);
     $("#iTetris").append($gameBoard);
 
-    for (var y = 0; y < EXTENT_Y; y++)
+    for (var y = 0; y < extentY; y++)
     {
         gameBoard[y] = [];
-        for (var x = 0; x < DIMENSION_X; x++)
+        for (var x = 0; x < dimensionX; x++)
         {
             var block = _.extend(
                 {
                     filled: false,
-                    colour: BOARD_COLOUR,
+                    colour: boardColour,
                     $elem: $("<div class='block' />"),
                 }, blockProto);
-            block.$elem.width(BLOCK_WIDTH);
-            block.$elem.height(BLOCK_WIDTH);
-            block.$elem.css("border-width", BORDER_WIDTH);
+            block.$elem.width(blockWidth);
+            block.$elem.height(blockWidth);
+            block.$elem.css("border-width", borderWidth);
             block.$elem.css("border-style", "outset");
             $gameBoard.append(block.$elem);
             gameBoard[y][x] = block;
-            if (y < HIDDEN_ROWS) block.$elem.hide();
+            if (y < hiddenRows) block.$elem.hide();
             block.render();
         }
     }
@@ -87,7 +87,7 @@ function _gameTimerCallback()
 {
     var currTime = new Date().getTime();
     var timeDelta = currTime - scoreTimerStart;
-    if (timeDelta > LEVEL_ROLLOVER)
+    if (timeDelta > levelRollover)
     {
         currLevel += 1;
         currSpeed = 0.8 * currSpeed;
@@ -112,9 +112,14 @@ function setupGameTimer()
     scoreTimer = setInterval(_gameTimerCallback, 100);
 }
 
+function breakGameLoop()
+{
+    clearTimeout(gameLoopTimer);
+}
+
 function setupDialogTemplates()
 {
-    _.each(TEMPLATES, function(templateName)
+    _.each(templates, function(templateName)
     {
         $templates[templateName] = $("#template-" + templateName);
     });
@@ -123,7 +128,7 @@ function setupDialogTemplates()
 
 function setupGame()
 {
-    currSpeed = GAME_SPEED;
+    currSpeed = gameSpeed;
     currLevel = 1;
     currScore = 0;
     currRows = 0;
@@ -153,5 +158,5 @@ function boot()
     preventIphonePanning();
     drawGameBoard();
     setupDialogTemplates();
-    showDialog(TEMPLATES.NEWGAME, false);
+    showDialog(templates.newGame, false);
 }

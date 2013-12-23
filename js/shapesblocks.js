@@ -37,7 +37,7 @@ var shapeProto =
             {
                 var gameBlock = this.container[this.currY + y][this.currX + x];
                 gameBlock.filled = blockDef ? false : gameBlock.filled;
-                gameBlock.colour = blockDef ? BOARD_COLOUR : gameBlock.colour;
+                gameBlock.colour = blockDef ? boardColour : gameBlock.colour;
                 gameBlock.render();
             }, this, this);
     }
