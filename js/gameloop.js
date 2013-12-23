@@ -80,9 +80,8 @@ function completeRows()
 
 function doGameOver()
 {
-    gameIsOver = true;
     clearInterval(scoreTimer);
-    alert("GAME OVER");
+    showDialog(TEMPLATES.GAMEOVER, false);
 }
 
 function isGameOver()

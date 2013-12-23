@@ -36,7 +36,7 @@
     </div>
 
     <div id="templates">
-        <div id="template-newgame">
+        <div id="template-newgame" class="template">
             <h2>Welcome to iTetris.org</h2>
             <h3>Controls</h3>
             <h4>iPhone</h4>
@@ -56,13 +56,13 @@
 [space bar]     drop block
             </pre>
             <p>Click to start!</p>
-            <button id="new-game-button" class="themed-button">New game</button>
+            <button class="themed-button" onclick="handleNewGame(this)">New game</button>
         </div>
 
-        <div id="template-gameover">
+        <div id="template-gameover" class="template">
             <h2>Game over</h2>
             <p>Click below for another round...</p>
-            <button id="restart-game-button" class="themed-button">New game</button>
+            <button class="themed-button" onclick="handleNewGame(this)">New game</button>
         </div>
     </div>
 </body>

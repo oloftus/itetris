@@ -15,9 +15,11 @@ var BLOCKED =
 
 var TEMPLATES = 
 {
-    NEWGAME: "newgame"
+    NEWGAME: "newgame",
+    GAMEOVER: "gameover"
 }
 
+var $templates = {};
 var openDialogIds = [];
 
 var isNewGame;
@@ -27,10 +29,10 @@ var gamePaused;
 var scoreTimerStart;
 var scoreTimer;
 
-var currSpeed = GAME_SPEED;
-var currLevel = 1;
-var currScore = 0;
-var currRows = 0;
+var currSpeed;
+var currLevel;
+var currScore;
+var currRows;
 
 var activeShape;
 var lastShape;

@@ -3,8 +3,6 @@
 function boot()
 {
     drawGameBoard();
-    setupKeyBindings();
-    setupTouchBindings();
-    setupDialogBindings();
+    setupDialogTemplates();
     showDialog(TEMPLATES.NEWGAME, false);
 }
