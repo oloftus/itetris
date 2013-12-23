@@ -14,7 +14,7 @@ function drawGameBoard()
     var NEXT_SHAPE_BLOCK_WIDTH =  NEXT_SHAPE_BLOCK_SIZE - (2 * NEXT_SHAPE_BORDER_WIDTH);
     var NEXT_SHAPE_DISPLAY_WIDTH = NEXT_SHAPE_DISPLAY_DIMENSION * NEXT_SHAPE_BLOCK_SIZE;
 
-    var ADJUSTED_BLOCK_SIZE = (BLOCK_SIZE - Math.floor((NEXT_SHAPE_DISPLAY_WIDTH + NEXT_SHAPE_PADDING + IPHONE_BAR_HEIGHT) / DIMENSION_Y));
+    var ADJUSTED_BLOCK_SIZE = (BLOCK_SIZE - Math.floor((NEXT_SHAPE_DISPLAY_WIDTH + NEXT_SHAPE_PADDING + IPHONE_BAR_HEIGHT + 10) / DIMENSION_Y));
     var BOARD_WIDTH = DIMENSION_X * ADJUSTED_BLOCK_SIZE;
     var BOARD_HEIGHT = DIMENSION_Y * ADJUSTED_BLOCK_SIZE;
     var BLOCK_WIDTH = (ADJUSTED_BLOCK_SIZE - (2 * BORDER_WIDTH));
@@ -138,8 +138,19 @@ function setupGame()
     gameLoop();
 }
 
+function preventIphonePanning()
+{
+    var hammertime = $("#iTetris").hammer()
+
+    hammertime.on("touchmove", function(e)
+    {
+        e.preventDefault();
+    });
+}
+
 function boot()
 {
+    preventIphonePanning();
     drawGameBoard();
     setupDialogTemplates();
     showDialog(TEMPLATES.NEWGAME, false);

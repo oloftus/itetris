@@ -91,12 +91,6 @@ function setupTouchBindings()
         lastDeltaX = 0;
     }
 
-    // Stop panning iPhone viewport up and down
-    hammertime.on("touchmove", function(e)
-    {
-        e.preventDefault();
-    });
-
     hammertime.on("dragend", initParams);
     initParams();
 
