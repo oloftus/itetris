@@ -19,6 +19,8 @@ var TEMPLATES =
     GAMEOVER: "gameover"
 }
 
+var controlsActive;
+
 var $templates = {};
 var openDialogIds = [];
 

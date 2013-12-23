@@ -10,8 +10,7 @@ var includeScripts =
     "gameloop.js",
     "controls.js",
     "scoring.js",
-    "setup.js",
-    "boot.js"
+    "setup.js"
 ];
 
 $(function()

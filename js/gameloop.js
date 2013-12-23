@@ -80,7 +80,8 @@ function completeRows()
 
 function doGameOver()
 {
-    clearInterval(scoreTimer);
+    pauseGameTimer();
+    clearControls();
     showDialog(TEMPLATES.GAMEOVER, false);
 }
 

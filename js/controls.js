@@ -158,18 +158,36 @@ function setupTouchBindings()
     });
 }
 
-function pauseGame()
+function setupControls()
 {
-    clearTimeout(gameLoopTimer);
+    if (!controlsActive)
+    {
+        setupTouchBindings();
+        setupKeyBindings();
+        controlsActive = true;
+    }
+}
+
+function clearControls()
+{
     clearTouchBindings();
     clearKeyBindings();
+    controlsActive = false;
+}
+
+function pauseGame()
+{
+    pauseGameTimer();
+    clearControls();
     gamePaused = true;
+    clearTimeout(gameLoopTimer);
 }
 
 function unpauseGame()
 {
     if (gamePaused)
     {
+        unpauseGameTimer();
         setupTouchBindings();
         setupKeyBindings();
         gamePaused = false;

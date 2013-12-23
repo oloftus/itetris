@@ -5,8 +5,7 @@ function showDialog(templateName, pause)
     pause = _.isUndefined(pause) ? false : pause;
 
     if (pause) pauseGame();
-    clearTouchBindings();
-    clearKeyBindings();
+    clearControls();
 
     var dialogId;
     while (true)
@@ -16,7 +15,7 @@ function showDialog(templateName, pause)
     }
     openDialogIds.push(dialogId);
 
-    var $template = $templates[templateName];
+    var $template = $templates[templateName].clone();
     var $dialog = $(
         "<div class='dialog' id='dialog-" + dialogId + "'>" +
             "<div class='inner' />" +
@@ -36,10 +35,10 @@ function closeDialog(dialogId)
     if (typeof dialogId !== "number")
         dialogId = parseInt(_.last($(dialogId).parents(".dialog").attr("id").split("-")), 10);
 
-    $("#dialog-" + dialogId).children(".template").detach();
     $("#dialog-" + dialogId).remove();
     $("#dialog-overlay-" + dialogId).remove();
     openDialogIds = _.without(openDialogIds, dialogId);
+    setupControls();
     unpauseGame();
 }
 
