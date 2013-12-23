@@ -6,5 +6,5 @@ gameSpeed = 1000; //milliseconds
 borderWidth = 3; //pixels
 nextShapeDisplayDimension = 4; //blocks
 nextShapePadding = 20; //pixels
-iphoneBarHeight = 10; //pixels
+iphoneBarHeight = 26; //pixels
 levelRollover = 60000; //milliseconds

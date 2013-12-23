@@ -13,27 +13,31 @@ function drawGameBoard()
     var nextShapeBorderWidth = Math.floor(borderWidth / 3);
     var nextShapeBlockWidth =  nextShapeBlockSize - (2 * nextShapeBorderWidth);
     var nextShapeDisplayWidth = nextShapeDisplayDimension * nextShapeBlockSize;
+    var headerHeight = nextShapeDisplayWidth + nextShapePadding;
 
-    var adjustedBlockSize = (blockSize - Math.floor((nextShapeDisplayWidth + nextShapePadding + iphoneBarHeight + 10) / dimensionY));
+    var adjustedBlockSize = (blockSize - Math.floor((headerHeight + iphoneBarHeight) / dimensionY));
     var boardWidth = dimensionX * adjustedBlockSize;
     var boardHeight = dimensionY * adjustedBlockSize;
     var blockWidth = (adjustedBlockSize - (2 * borderWidth));
     
     $gameRoot.width(boardWidth);
 
+    $header = $("#header");
+    $header.height(nextShapeDisplayWidth + nextShapePadding);
+
     var $scoreCard = $(
-        "<div id='score-card'>" +
-            "<p>R: <span id='score-rows' /></p>" +
-            "<p>S: <span id='score-score' /></p>" +
-            "<p>L: <span id='score-level' /></p>" +
-        "</div>");
-    $gameRoot.append($scoreCard);
+        "<table id='score-card'>" +
+            "<tr><td>Row<td><td><span id='score-rows' /></td></tr>" +
+            "<tr><td>Score<td><td><span id='score-score' /></td></tr>" +
+            "<tr><td>Level<td><td><span id='score-level' /></td></tr>" +
+        "</table>");
+    $header.append($scoreCard);
     updateScores();
 
     var $nextShapeDisplay = $("<div id='next-shape' />")
     $nextShapeDisplay.css("width", nextShapeDisplayWidth);
     $nextShapeDisplay.css("height", nextShapeDisplayWidth);
-    $gameRoot.append($nextShapeDisplay);
+    $header.append($nextShapeDisplay);
 
     for (var y = 0; y < nextShapeDisplayDimension; y++)
     {

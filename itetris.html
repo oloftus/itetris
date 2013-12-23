@@ -32,7 +32,9 @@
 
 <body>
     <div id="itetris">
-        <h1 id="title">iTetris.org</h1>
+        <div id="header">
+            <h1 id="title">iTetris.org</h1>
+        </div>
     </div>
 
     <div id="dialog-templates">
@@ -56,13 +58,13 @@
 [space bar]     drop block
             </pre>
             <p>Click to start!</p>
-            <a href="#" class="themed-button" onclick="handleNewGame(this)">New game</a>
+            <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
         </div>
 
         <div id="template-gameover" class="template">
             <h2>Game over</h2>
             <p>Click below for another round...</p>
-            <a href="#" class="themed-button" onclick="handleNewGame(this)">New game</a>
+            <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
         </div>
     </div>
 </body>
