@@ -1,7 +1,7 @@
 body{margin:0;background-color:#333333;overflow:hidden;
     font-size:12px;font-family:sans-serif;color:white;}
 
-#itetris{margin:0 auto;}
+#itetris{margin:0 auto;min-width:260px;min-height:525px;}
 #itetris h1{margin:0;width:128px;height:100%;background:url(logo.svg) no-repeat center;background-size:128px 40px;text-indent:-1000em;}
 #itetris h1, #score-card{float:left;}
 #score-card{margin-left:10px;height:100%;}
