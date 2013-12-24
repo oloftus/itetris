@@ -1,0 +1,32 @@
+CACHE MANIFEST
+# Version 1.1
+
+CACHE:
+
+# General
+itetris.html
+styles.css
+logo.svg
+touch-icon-iphone.png
+
+# Library
+lib/jquery.js
+lib/underscore.js
+lib/hammer.js
+lib/jquery.hammer.js
+lib/add2home.js
+lib/add2home.css
+
+# Application
+js/main.js
+js/activeshape.js
+js/config.js
+js/controls.js
+js/dialogs.js
+js/gameloop.js
+js/globals.js
+js/main.js
+js/scoring.js
+js/setup.js
+js/shapesblocks.js
+js/util.js
