@@ -9,7 +9,7 @@ function newRandomShape()
     return rotShape;
 }
 
-function displayNextShape(shape)
+function setAndDisplayNextShape(shape)
 {
     if (lastShape) lastShape.clear();
     nextShape = _.extend({}, shape);
@@ -80,7 +80,7 @@ function completeRows()
 
 function doGameOver()
 {
-    pauseGameTimer();
+    pauseScoreTimer();
     clearControls();
     showDialog(dialogTemplates.gameOver, false);
 }
@@ -99,14 +99,14 @@ function gameLoop()
 
     if (isNewGame || isActiveShapeSettled())
     {
-        isNewGame = false;
-        if (isGameOver())
+        if (!isNewGame && isGameOver())
         {
             doGameOver();
             return;
         }
+        isNewGame = false;
         addShapeToBoard(nextShape);
-        displayNextShape(newRandomShape());
+        setAndDisplayNextShape(newRandomShape());
         lastShape = nextShape;
         completeRows();
     }

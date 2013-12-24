@@ -165,7 +165,6 @@ function setupTouchBindings()
 
 function setupControls()
 {
-    debugger;
     if (!controlsActive && $("#itetris").length > 0)
     {
         setupTouchBindings();
@@ -183,19 +182,19 @@ function clearControls()
 
 function pauseGame()
 {
-    pauseGameTimer();
+    pauseScoreTimer();
     clearControls();
-    gamePaused = true;
     breakGameLoop();
+    gamePaused = true;
 }
 
 function unpauseGame()
 {
     if (gamePaused)
     {
-        unpauseGameTimer();
+        unpauseScoreTimer();
         setupControls()
-        gamePaused = false;
         gameLoop();
+        gamePaused = false;
     }
 }

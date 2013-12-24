@@ -5,7 +5,7 @@ function showDialog(templateName, pause)
     pause = _.isUndefined(pause) ? false : pause;
 
     if (pause) pauseGame();
-    else clearControls();
+    clearControls();
 
     var dialogId;
     while (true)
@@ -41,10 +41,12 @@ function closeDialog(dialogId)
     unpauseGame();
 }
 
+
 /**** Event handlers *****/
 
 function handleNewGame(self)
 {
     closeDialog(self);
+    teardownGame();
     setupGame();
 }

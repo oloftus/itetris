@@ -40,5 +40,5 @@ var currRows;
 var activeShape;
 var lastShape;
 var nextShape;
-var gameBoard = [];
-var nextShapeDisplay = [];
+var gameBoard;
+var nextShapeDisplay;

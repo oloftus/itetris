@@ -101,17 +101,17 @@ function _gameTimerCallback()
     }
 }
 
-function pauseGameTimer()
+function pauseScoreTimer()
 {
     clearInterval(scoreTimer);
 }
 
-function unpauseGameTimer()
+function unpauseScoreTimer()
 {
     scoreTimer = setInterval(_gameTimerCallback, 100);
 }
 
-function setupGameTimer()
+function setupScoreTimer()
 {
     scoreTimerStart = new Date().getTime();
     scoreTimer = setInterval(_gameTimerCallback, 100);
@@ -131,26 +131,26 @@ function setupDialogTemplates()
     $("#dialogTemplates").detach();
 }
 
+function teardownGame()
+{
+    clearGameBoard();
+    pauseScoreTimer();
+    clearControls();
+    breakGameLoop();
+}
+
 function setupGame()
 {
-    currSpeed = gameSpeed;
-    currLevel = 1;
-    currScore = 0;
-    currRows = 0;
-    gameBoard = [];
-    nextShapeDisplay = [];
-    isNewGame = true;
-    
-    clearGameBoard();
+    initGlobals();
     drawGameBoard();
-    setupGameTimer();
+    setupScoreTimer();
     setupControls();
     gameLoop();
 }
 
 function preventIphonePanning()
 {
-    var hammertime = $("#itetris").hammer()
+    var hammertime = $(document).hammer()
 
     hammertime.on("touchmove", function(e)
     {
@@ -158,10 +158,34 @@ function preventIphonePanning()
     });
 }
 
+function initGlobals()
+{
+    controlsActive = false;
+
+    isNewGame = true;
+    gameLoopTimer = null;
+    gamePaused = false;
+
+    scoreTimerStart = null;
+    scoreTimer = null;
+
+    currSpeed = gameSpeed;
+    currLevel = 1;
+    currScore = 0;
+    currRows = 0;
+
+    activeShape = null;
+    lastShape = null;
+    nextShape = null;
+    gameBoard = [];
+    nextShapeDisplay = [];
+}
+
 function boot()
 {
+    initGlobals();
     preventIphonePanning();
-    drawGameBoard();
     setupDialogTemplates();
+    drawGameBoard();
     showDialog(dialogTemplates.newGame, false);
 }
