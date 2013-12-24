@@ -15,7 +15,7 @@ function drawGameBoard()
     var nextShapeDisplayWidth = nextShapeDisplayDimension * nextShapeBlockSize;
     var headerHeight = nextShapeDisplayWidth + nextShapePadding;
 
-    var adjustedBlockSize = (blockSize - Math.floor((headerHeight + iphoneBarHeight) / dimensionY));
+    var adjustedBlockSize = (blockSize - Math.floor((headerHeight) / dimensionY));
     var boardWidth = dimensionX * adjustedBlockSize;
     var boardHeight = dimensionY * adjustedBlockSize;
     var blockWidth = (adjustedBlockSize - (2 * borderWidth));
@@ -27,9 +27,9 @@ function drawGameBoard()
 
     var $scoreCard = $(
         "<table id='score-card'>" +
-            "<tr><td>Row<td><td><span id='score-rows' /></td></tr>" +
-            "<tr><td>Score<td><td><span id='score-score' /></td></tr>" +
-            "<tr><td>Level<td><td><span id='score-level' /></td></tr>" +
+            "<tr><td>R<td><td><span id='score-rows' /></td></tr>" +
+            "<tr><td>S<td><td><span id='score-score' /></td></tr>" +
+            "<tr><td>L<td><td><span id='score-level' /></td></tr>" +
         "</table>");
     $header.append($scoreCard);
     updateScores();
