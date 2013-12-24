@@ -16,7 +16,8 @@ var blocked =
 var dialogTemplates = 
 {
     newGame: "newgame",
-    gameOver: "gameover"
+    gameOver: "gameover",
+    gamepaused: "gamepaused"
 }
 
 var controlsActive;

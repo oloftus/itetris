@@ -66,6 +66,9 @@ function clearTouchBindings()
     hammertime.off("tap");
     hammertime.off("drag");
     hammertime.off("dragdown");
+
+    hammertime = $("#title").hammer();
+    hammertime.off("tap");
 }
 
 function setupTouchBindings()
@@ -150,11 +153,20 @@ function setupTouchBindings()
 
         e.preventDefault();
     });
+
+    hammertime = $("#title").hammer();
+
+    hammertime.on("tap", function(e)
+    {
+        showDialog(dialogTemplates.gamepaused, true);
+        e.preventDefault();
+    });
 }
 
 function setupControls()
 {
-    if (!controlsActive)
+    debugger;
+    if (!controlsActive && $("#itetris").length > 0)
     {
         setupTouchBindings();
         setupKeyBindings();
@@ -182,8 +194,7 @@ function unpauseGame()
     if (gamePaused)
     {
         unpauseGameTimer();
-        setupTouchBindings();
-        setupKeyBindings();
+        setupControls()
         gamePaused = false;
         gameLoop();
     }

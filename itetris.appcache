@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Version 1.1
+# Version 1.7
 
 CACHE:
 
@@ -9,7 +9,7 @@ styles.css
 logo.svg
 touch-icon-iphone.png
 
-# Library
+# Libraries
 lib/jquery.js
 lib/underscore.js
 lib/hammer.js

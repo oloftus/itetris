@@ -5,7 +5,7 @@ function showDialog(templateName, pause)
     pause = _.isUndefined(pause) ? false : pause;
 
     if (pause) pauseGame();
-    clearControls();
+    else clearControls();
 
     var dialogId;
     while (true)
@@ -38,7 +38,6 @@ function closeDialog(dialogId)
     $("#dialog-" + dialogId).remove();
     $("#dialog-overlay-" + dialogId).remove();
     openDialogIds = _.without(openDialogIds, dialogId);
-    setupControls();
     unpauseGame();
 }
 

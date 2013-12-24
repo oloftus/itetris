@@ -57,7 +57,7 @@
 [up arrow]      rotate block
 [space bar]     drop block
             </pre>
-            <p>Click to start!</p>
+            <p>Click the iTetris logo to pause/restart the game.</p>
             <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
         </div>
 
@@ -65,6 +65,12 @@
             <h2>Game over</h2>
             <p>Click below for another round...</p>
             <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+        </div>
+
+        <div id="template-gamepaused" class="template">
+            <h2>Paused</h2>
+            <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+            <a href="#" class="button" onclick="closeDialog(this)">Unpause game</a>
         </div>
     </div>
 </body>
