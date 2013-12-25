@@ -3,7 +3,8 @@
 var boardColour = "transparent"
 var hiddenRows = 5;
 var extentY = dimensionY + hiddenRows;
-
+var nextShapePadding = 20;
+var nextShapeDisplayDimension = 4;
 var blockSize = Math.ceil(Math.min($(document).width() / dimensionX, $(document).height() / dimensionY) - 1);
 
 var blocked = 
@@ -37,12 +38,11 @@ var elementIds =
     inner: "inner"
 }
 
-var controlsActive;
-
 var $dialogTemplates = {};
 var openDialogIds = [];
 var dialogTemplatesFile = "dialog-templates.html"
 
+var controlsActive;
 var isNewGame;
 var gameLoopTimer;
 var gamePaused;

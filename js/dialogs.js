@@ -41,6 +41,30 @@ function closeDialog(dialogId)
     unpauseGame();
 }
 
+function setupDialogTemplates()
+{
+    var $theTemplates = null;
+    var basePath = window.location.pathname.split("/");
+    var templatesPath = _.first(basePath, basePath.length - 1).join("") + dialogTemplatesFile;
+    $.ajax(
+        {
+            async: false,
+            type: 'GET',
+            url: templatesPath,
+            success: function(data)
+            {
+                $theTemplates = data;
+            }
+        });
+
+    $("body").append($theTemplates);
+
+    _.each(dialogTemplates, function(templateName)
+    {
+        $dialogTemplates[templateName] = $("#" + elementIds.dialogTemplate + "-" + templateName);
+    });
+}
+
 
 /**** Event handlers *****/
 

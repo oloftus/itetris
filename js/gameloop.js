@@ -93,6 +93,11 @@ function isGameOver()
     });
 }
 
+function breakGameLoop()
+{
+    clearTimeout(gameLoopTimer);
+}
+
 function gameLoop()
 {
     if (isNewGame) nextShape = newRandomShape();

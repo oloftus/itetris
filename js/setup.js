@@ -90,64 +90,6 @@ function drawGameBoard()
     }
 }
 
-function _gameTimerCallback()
-{
-    var currTime = new Date().getTime();
-    var timeDelta = currTime - scoreTimerStart;
-    if (timeDelta > levelRollover)
-    {
-        currLevel += 1;
-        currSpeed = 0.8 * currSpeed;
-        scoreTimerStart = currTime;
-        updateScores();
-    }
-}
-
-function pauseScoreTimer()
-{
-    clearInterval(scoreTimer);
-}
-
-function unpauseScoreTimer()
-{
-    scoreTimer = setInterval(_gameTimerCallback, 100);
-}
-
-function setupScoreTimer()
-{
-    scoreTimerStart = new Date().getTime();
-    scoreTimer = setInterval(_gameTimerCallback, 100);
-}
-
-function breakGameLoop()
-{
-    clearTimeout(gameLoopTimer);
-}
-
-function setupDialogTemplates()
-{
-    var $theTemplates = null;
-    var basePath = window.location.pathname.split("/");
-    var templatesPath = _.first(basePath, basePath.length - 1).join("") + dialogTemplatesFile;
-    $.ajax(
-        {
-            async: false,
-            type: 'GET',
-            url: templatesPath,
-            success: function(data)
-            {
-                $theTemplates = data;
-            }
-        });
-
-    $("body").append($theTemplates);
-
-    _.each(dialogTemplates, function(templateName)
-    {
-        $dialogTemplates[templateName] = $("#" + elementIds.dialogTemplate + "-" + templateName);
-    });
-}
-
 function teardownGame()
 {
     clearGameBoard();

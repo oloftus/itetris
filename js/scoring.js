@@ -31,3 +31,32 @@ function updateRows(consecutiveRows)
     currRows += consecutiveRows;
     updateScores();
 }
+
+function _gameTimerCallback()
+{
+    var currTime = new Date().getTime();
+    var timeDelta = currTime - scoreTimerStart;
+    if (timeDelta > levelRollover)
+    {
+        currLevel += 1;
+        currSpeed = 0.8 * currSpeed;
+        scoreTimerStart = currTime;
+        updateScores();
+    }
+}
+
+function pauseScoreTimer()
+{
+    clearInterval(scoreTimer);
+}
+
+function unpauseScoreTimer()
+{
+    scoreTimer = setInterval(_gameTimerCallback, 100);
+}
+
+function setupScoreTimer()
+{
+    scoreTimerStart = new Date().getTime();
+    scoreTimer = setInterval(_gameTimerCallback, 100);
+}
