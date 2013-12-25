@@ -17,7 +17,8 @@ var dialogTemplates =
 {
     newGame: "newgame",
     gameOver: "gameover",
-    gamepaused: "gamepaused"
+    gamepaused: "gamepaused",
+    credLics: "credlics"
 }
 
 var elementIds =

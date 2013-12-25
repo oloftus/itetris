@@ -22,6 +22,8 @@
         <p>R: rows, S: score, L: level</p>
         <p>Click the iTetris logo to pause/restart the game.</p>
         <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+        <br /><hr />
+        <center><a href="#" onclick="closeDialog(this);showDialog(dialogTemplates.credLics)">Credits/licenses</a></center>
     </div>
 
     <div id="template-gameover">
@@ -34,5 +36,17 @@
         <h2>Paused</h2>
         <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
         <a href="#" class="button" onclick="closeDialog(this)">Unpause game</a>
+    </div>
+
+    <div id="template-credlics">
+        <h2>Credits & licenses</h2>
+        <h3>Libraries used</h3>
+        <ul>
+            <li><a href="http://underscorejs.org">Underscore.js</a></li>
+            <li><a href="http://jquery.org">jQuery</a></li>
+            <li><a href="http://eightmedia.github.io/hammer.js/">Hammer</a></li>
+            <li><a href="http://cubiq.org/add-to-home-screen">Add2Home</a></li>
+        </ul>
+        <a href="#" class="button" onclick="closeDialog(this);showDialog(dialogTemplates.newGame)">Close</a>
     </div>
 </div>
