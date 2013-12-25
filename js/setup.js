@@ -21,7 +21,7 @@ function drawGameBoard()
     var blockWidth = (adjustedBlockSize - (2 * borderWidth));
     
     $gameRoot = $("#" + elementIds.gameRoot);
-    
+
     $gameRoot.width(boardWidth);
 
     $header = $("#" + elementIds.header);
@@ -126,6 +126,22 @@ function breakGameLoop()
 
 function setupDialogTemplates()
 {
+    var $theTemplates = null;
+    var basePath = window.location.pathname.split("/");
+    var templatesPath = _.first(basePath, basePath.length - 1).join("") + dialogTemplatesFile;
+    $.ajax(
+        {
+            async: false,
+            type: 'GET',
+            url: templatesPath,
+            success: function(data)
+            {
+                $theTemplates = data;
+            }
+        });
+
+    $("body").append($theTemplates);
+
     _.each(dialogTemplates, function(templateName)
     {
         $dialogTemplates[templateName] = $("#" + elementIds.dialogTemplate + "-" + templateName);

@@ -1,0 +1,38 @@
+<div id="dialog-templates">
+    <div id="template-newgame">
+        <h2>Welcome to iTetris.org</h2>
+        <h3>Controls</h3>
+        <h4>iPhone</h4>
+        <pre>
+[drag left]    move block left
+[drag right]   move block right
+[drag down]    move block down
+[tap]          rotate block
+[swipe down]   drop block
+        </pre>
+        <h4>Computer</h4>
+        <pre>
+[left arrow]    move block left
+[right arrow]   move block right
+[down arrow]    move block down
+[up arrow]      rotate block
+[space bar]     drop block
+        </pre>
+        <h3>Scores</h3>
+        <p>R: rows, S: score, L: level</p>
+        <p>Click the iTetris logo to pause/restart the game.</p>
+        <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+    </div>
+
+    <div id="template-gameover">
+        <h2>Game over</h2>
+        <p>Click below for another round...</p>
+        <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+    </div>
+
+    <div id="template-gamepaused">
+        <h2>Paused</h2>
+        <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+        <a href="#" class="button" onclick="closeDialog(this)">Unpause game</a>
+    </div>
+</div>

@@ -41,6 +41,7 @@ var controlsActive;
 
 var $dialogTemplates = {};
 var openDialogIds = [];
+var dialogTemplatesFile = "dialog-templates.html"
 
 var isNewGame;
 var gameLoopTimer;
