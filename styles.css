@@ -5,8 +5,9 @@ body{margin:0;background-color:#333333;overflow:hidden;
 #itetris h1{margin:0;width:128px;height:100%;background:url(logo.svg) no-repeat center;background-size:128px 40px;text-indent:-1000em;}
 #itetris h1, #score-card{float:left;}
 #score-card{margin-left:10px;height:100%;}
-#next-shape{float:right;padding:5px;margin:5px 0;}
+#score-card td:first-child{font-weight:bold;}
 #game-board, #next-shape{background-color:#FFFACD;}
+#next-shape{float:right;padding:5px;margin:5px 0;}
 #game-board{clear:both;}
 .block{float:left;}
 

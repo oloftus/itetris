@@ -5,7 +5,6 @@ var hiddenRows = 5;
 var extentY = dimensionY + hiddenRows;
 
 var blockSize = Math.ceil(Math.min($(document).width() / dimensionX, $(document).height() / dimensionY) - 1);
-var $gameRoot = $("#itetris");
 
 var blocked = 
 {
@@ -18,6 +17,24 @@ var dialogTemplates =
     newGame: "newgame",
     gameOver: "gameover",
     gamepaused: "gamepaused"
+}
+
+var elementIds =
+{
+    gameRoot: "itetris",
+    gameBoard: "game-board",
+    block: "block",
+    branding: "title",
+    dialog: "dialog",
+    dialogTemplate: "template",
+    dialogOverlay: "dialog-overlay",
+    scoreRows: "score-rows",
+    scoreScore: "score-score",
+    scoreLevel: "score-level",
+    scoreCard: "score-card",
+    nextShape: "next-shape",
+    header: "header",
+    inner: "inner"
 }
 
 var controlsActive;

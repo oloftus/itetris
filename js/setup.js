@@ -2,9 +2,9 @@
 
 function clearGameBoard()
 {
-    $("#score-card").remove();
-    $("#next-shape").remove();
-    $("#game-board").remove();
+    $("#" + elementIds.scoreCard).remove();
+    $("#" + elementIds.nextShape).remove();
+    $("#" + elementIds.gameBoard).remove();
 }
 
 function drawGameBoard()
@@ -20,21 +20,23 @@ function drawGameBoard()
     var boardHeight = dimensionY * adjustedBlockSize;
     var blockWidth = (adjustedBlockSize - (2 * borderWidth));
     
+    $gameRoot = $("#" + elementIds.gameRoot);
+    
     $gameRoot.width(boardWidth);
 
-    $header = $("#header");
+    $header = $("#" + elementIds.header);
     $header.height(nextShapeDisplayWidth + nextShapePadding);
 
     var $scoreCard = $(
         "<table id='score-card'>" +
-            "<tr><td>R<td><td><span id='score-rows' /></td></tr>" +
-            "<tr><td>S<td><td><span id='score-score' /></td></tr>" +
-            "<tr><td>L<td><td><span id='score-level' /></td></tr>" +
+            "<tr><td>R<td><td><span id='" + elementIds.scoreRows + "' /></td></tr>" +
+            "<tr><td>S<td><td><span id='" + elementIds.scoreScore + "' /></td></tr>" +
+            "<tr><td>L<td><td><span id='" + elementIds.scoreLevel + "' /></td></tr>" +
         "</table>");
     $header.append($scoreCard);
     updateScores();
 
-    var $nextShapeDisplay = $("<div id='next-shape' />")
+    var $nextShapeDisplay = $("<div id='" + elementIds.nextShape + "' />")
     $nextShapeDisplay.css("width", nextShapeDisplayWidth);
     $nextShapeDisplay.css("height", nextShapeDisplayWidth);
     $header.append($nextShapeDisplay);
@@ -48,7 +50,7 @@ function drawGameBoard()
                 {
                     filled: false,
                     colour: boardColour,
-                    $elem: $("<div class='block' />"),
+                    $elem: $("<div class='" + elementIds.block + "' />"),
                 }, blockProto);
             block.$elem.css("width", nextShapeBlockWidth);
             block.$elem.css("height", nextShapeBlockWidth);
@@ -60,7 +62,7 @@ function drawGameBoard()
         }
     }
 
-    var $gameBoard = $("<div id='game-board' />");
+    var $gameBoard = $("<div id='" + elementIds.gameBoard + "' />");
     $gameBoard.width(boardWidth);
     $gameBoard.height(boardHeight);
     $gameRoot.append($gameBoard);
@@ -74,7 +76,7 @@ function drawGameBoard()
                 {
                     filled: false,
                     colour: boardColour,
-                    $elem: $("<div class='block' />"),
+                    $elem: $("<div class='" + elementIds.block + "' />"),
                 }, blockProto);
             block.$elem.width(blockWidth);
             block.$elem.height(blockWidth);
@@ -126,9 +128,8 @@ function setupDialogTemplates()
 {
     _.each(dialogTemplates, function(templateName)
     {
-        $dialogTemplates[templateName] = $("#template-" + templateName);
+        $dialogTemplates[templateName] = $("#" + elementIds.dialogTemplate + "-" + templateName);
     });
-    $("#dialogTemplates").detach();
 }
 
 function teardownGame()

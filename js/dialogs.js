@@ -17,12 +17,12 @@ function showDialog(templateName, pause)
 
     var $template = $dialogTemplates[templateName].clone();
     var $dialog = $(
-        "<div class='dialog' id='dialog-" + dialogId + "'>" +
-            "<div class='inner' />" +
+        "<div class='" + elementIds.dialog + "' id='" + elementIds.dialog + "-" + dialogId + "'>" +
+            "<div class='" + elementIds.inner + "' />" +
         "</div>");
-    $dialog.children(".inner").append($template);
+    $dialog.children("." + elementIds.inner).append($template);
     
-    var $dialogOverlay = $("<div class='dialog-overlay' id='dialog-overlay-" + dialogId + "' />");
+    var $dialogOverlay = $("<div class='" + elementIds.dialogOverlay + "' id='" + elementIds.dialogOverlay + "-" + dialogId + "' />");
     
     $("body").append($dialog);
     $("body").append($dialogOverlay);
@@ -33,10 +33,10 @@ function showDialog(templateName, pause)
 function closeDialog(dialogId)
 {
     if (typeof dialogId !== "number")
-        dialogId = parseInt(_.last($(dialogId).parents(".dialog").attr("id").split("-")), 10);
+        dialogId = parseInt(_.last($(dialogId).parents("." + elementIds.dialog).attr("id").split("-")), 10);
 
-    $("#dialog-" + dialogId).remove();
-    $("#dialog-overlay-" + dialogId).remove();
+    $("#" + elementIds.dialog + "-" + dialogId).remove();
+    $("#" + elementIds.dialogOverlay + "-" + dialogId).remove();
     openDialogIds = _.without(openDialogIds, dialogId);
     unpauseGame();
 }

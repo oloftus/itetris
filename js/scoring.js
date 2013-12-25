@@ -2,9 +2,9 @@
 
 function updateScores()
 {
-    var $scoreRows = $("#score-rows");
-    var $scoreScore = $("#score-score");
-    var $scoreLevel = $("#score-level");
+    var $scoreRows = $("#" + elementIds.scoreRows);
+    var $scoreScore = $("#" + elementIds.scoreScore);
+    var $scoreLevel = $("#" + elementIds.scoreLevel);
     $scoreRows.text(currRows);
     $scoreScore.text(currScore);
     $scoreLevel.text(currLevel);

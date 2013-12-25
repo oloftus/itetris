@@ -60,20 +60,20 @@ function setupKeyBindings()
 
 function clearTouchBindings()
 {
-    var hammertime = $("#itetris").hammer();
+    var hammertime = $("#" + elementIds.gameRoot).hammer();
     hammertime.off("dragend");
     hammertime.off("swipedown");
     hammertime.off("tap");
     hammertime.off("drag");
     hammertime.off("dragdown");
 
-    hammertime = $("#title").hammer();
+    hammertime = $("#" + elementIds.branding).hammer();
     hammertime.off("tap");
 }
 
 function setupTouchBindings()
 {
-    var hammertime = $("#itetris").hammer()
+    var hammertime = $("#" + elementIds.gameRoot).hammer()
 
     var directions =
     {
@@ -154,7 +154,7 @@ function setupTouchBindings()
         e.preventDefault();
     });
 
-    hammertime = $("#title").hammer();
+    hammertime = $("#" + elementIds.branding).hammer();
 
     hammertime.on("tap", function(e)
     {
@@ -165,7 +165,7 @@ function setupTouchBindings()
 
 function setupControls()
 {
-    if (!controlsActive && $("#itetris").length > 0)
+    if (!controlsActive && $("#" + elementIds.gameRoot).length > 0)
     {
         setupTouchBindings();
         setupKeyBindings();
