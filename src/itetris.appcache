@@ -3,20 +3,22 @@ CACHE MANIFEST
 
 CACHE:
 
-# General
+# HTML/CSS
 index.html
 dialog-templates.html
 styles.css
-logo.svg
-touch-icon-iphone.png
+
+# Assets
+../assets/logo.svg
+../assets/touch-icon-iphone.png
 
 # Libraries
-lib/jquery.js
-lib/underscore.js
-lib/hammer.js
-lib/jquery.hammer.js
-lib/add2home.js
-lib/add2home.css
+../lib/jquery.js
+../lib/underscore.js
+../lib/hammer.js
+../lib/jquery.hammer.js
+../lib/add2home.js
+../lib/add2home.css
 
 # Application
 js/main.js

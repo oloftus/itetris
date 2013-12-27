@@ -45,7 +45,7 @@ function setupDialogTemplates()
 {
     var $theTemplates = null;
     var basePath = window.location.pathname.split("/");
-    var templatesPath = _.first(basePath, basePath.length - 1).join("") + dialogTemplatesFile;
+    var templatesPath = [_.first(basePath, basePath.length - 1).join("/"), dialogTemplatesFile].join("/");
     $.ajax(
         {
             async: false,
