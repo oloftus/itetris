@@ -59,47 +59,47 @@ var shapes =
             definition:
                 [[1,1],
                  [1,1]],
-            colour: "yellow"
+            colour: "#FFCC00" // Yellow
         }, shapeProto),
     _.extend(
         {
             definition:
                 [[1,1,1,1]],
-            colour: "cyan"
+            colour: "#5AC8FA" // Cyan
         }, shapeProto),
     _.extend(
         {
                 definition:
                     [[1,1,1],
                      [0,0,1]],
-                 colour: "blue"
+                 colour: "#007AFF" // Blue
         }, shapeProto),
     _.extend(
         {
             definition:
                 [[1,1,1],
                  [1,0,0]],
-             colour: "orange"
+             colour: "#FF9500" // Orance
         }, shapeProto),
     _.extend(
         {
             definition:
                 [[0,1,1],
                  [1,1,0]],
-            colour: "#80FF00" // Lime
+            colour: "#4CD964" // Green
         }, shapeProto),
     _.extend(
         {
             definition:
                 [[1,1,0],
                  [0,1,1]],
-             colour: "red"
+             colour: "#FF3B30" // Red
         }, shapeProto),
     _.extend(
         {
             definition:
                 [[1,1,1],
                  [0,1,0]],
-             colour: "#800080" // Dark magenta
+             colour: "#5856D6" // Mmgenta
         }, shapeProto)
 ];

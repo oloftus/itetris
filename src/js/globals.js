@@ -3,9 +3,10 @@
 var boardColour = "transparent"
 var hiddenRows = 5;
 var extentY = dimensionY + hiddenRows;
-var nextShapePadding = 20;
+var nextShapePadding = 10;
+var nextShapeBorderWidth = 1;
 var nextShapeDisplayDimension = 4;
-var blockSize = Math.ceil(Math.min($(document).width() / dimensionX, $(document).height() / dimensionY) - 1);
+var blockSize = Math.floor(Math.min($(document).width() / dimensionX, $(document).height() / dimensionY));
 
 var blocked = 
 {
@@ -17,7 +18,7 @@ var dialogTemplates =
 {
     newGame: "newgame",
     gameOver: "gameover",
-    gamepaused: "gamepaused",
+    gamePaused: "gamepaused",
     credLics: "credlics"
 }
 

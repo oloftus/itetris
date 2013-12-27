@@ -9,36 +9,33 @@ function clearGameBoard()
 
 function drawGameBoard()
 {
-    var nextShapeBlockSize = Math.floor(blockSize / 3);
-    var nextShapeBorderWidth = Math.floor(borderWidth / 3);
-    var nextShapeBlockWidth =  nextShapeBlockSize - (2 * nextShapeBorderWidth);
-    var nextShapeDisplayWidth = nextShapeDisplayDimension * nextShapeBlockSize;
-    var headerHeight = nextShapeDisplayWidth + nextShapePadding;
+    var boardWidth = dimensionX * blockSize;
+    var boardHeight = dimensionY * blockSize;
+    var blockWidth = (blockSize - (2 * borderWidth));
 
-    var adjustedBlockSize = (blockSize - Math.floor((headerHeight) / dimensionY));
-    var boardWidth = dimensionX * adjustedBlockSize;
-    var boardHeight = dimensionY * adjustedBlockSize;
-    var blockWidth = (adjustedBlockSize - (2 * borderWidth));
-    
+    var headerHeight = $(document).height() - boardHeight - nextShapePadding;
+    var nextShapeBlockSize = Math.floor(headerHeight / nextShapeDisplayDimension);
+    var nextShapeBlockWidth = nextShapeBlockSize - (2 * nextShapeBorderWidth);
+    headerHeight = nextShapeBlockSize * nextShapeDisplayDimension;
+
     $gameRoot = $("#" + elementIds.gameRoot);
-
     $gameRoot.width(boardWidth);
 
     $header = $("#" + elementIds.header);
-    $header.height(nextShapeDisplayWidth + nextShapePadding);
+    $header.height(headerHeight);
 
     var $scoreCard = $(
         "<table id='score-card'>" +
-            "<tr><td>R<td><td><span id='" + elementIds.scoreRows + "' /></td></tr>" +
-            "<tr><td>S<td><td><span id='" + elementIds.scoreScore + "' /></td></tr>" +
-            "<tr><td>L<td><td><span id='" + elementIds.scoreLevel + "' /></td></tr>" +
+            "<tr><td>Rows<td><td><span id='" + elementIds.scoreRows + "' /></td></tr>" +
+            "<tr><td>Score<td><td><span id='" + elementIds.scoreScore + "' /></td></tr>" +
+            "<tr><td>Level<td><td><span id='" + elementIds.scoreLevel + "' /></td></tr>" +
         "</table>");
     $header.append($scoreCard);
     updateScores();
 
     var $nextShapeDisplay = $("<div id='" + elementIds.nextShape + "' />")
-    $nextShapeDisplay.css("width", nextShapeDisplayWidth);
-    $nextShapeDisplay.css("height", nextShapeDisplayWidth);
+    $nextShapeDisplay.width(headerHeight);
+    $nextShapeDisplay.height(headerHeight);
     $header.append($nextShapeDisplay);
 
     for (var y = 0; y < nextShapeDisplayDimension; y++)
@@ -52,8 +49,8 @@ function drawGameBoard()
                     colour: boardColour,
                     $elem: $("<div class='" + elementIds.block + "' />"),
                 }, blockProto);
-            block.$elem.css("width", nextShapeBlockWidth);
-            block.$elem.css("height", nextShapeBlockWidth);
+            block.$elem.width(nextShapeBlockWidth);
+            block.$elem.height(nextShapeBlockWidth);
             block.$elem.css("border-width", nextShapeBorderWidth);
             block.$elem.css("border-style", "outset");
             $nextShapeDisplay.append(block.$elem);

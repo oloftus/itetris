@@ -158,7 +158,7 @@ function setupTouchBindings()
 
     hammertime.on("tap", function(e)
     {
-        showDialog(dialogTemplates.gamepaused, true);
+        showDialog(dialogTemplates.gamePaused, true);
         e.preventDefault();
     });
 }

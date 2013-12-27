@@ -1,52 +1,45 @@
 <div id="dialog-templates">
     <div id="template-newgame">
-        <h2>Welcome to iTetris.org</h2>
-        <h3>Controls</h3>
-        <h4>iPhone</h4>
-        <pre>
-[drag left]    move block left
-[drag right]   move block right
-[drag down]    move block down
-[tap]          rotate block
-[swipe down]   drop block
-        </pre>
-        <h4>Computer</h4>
-        <pre>
-[left arrow]    move block left
-[right arrow]   move block right
-[down arrow]    move block down
-[up arrow]      rotate block
-[space bar]     drop block
-        </pre>
-        <h3>Scores</h3>
-        <p>R: rows, S: score, L: level</p>
-        <p>Click the iTetris logo to pause/restart the game.</p>
-        <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
-        <br /><hr />
-        <center><a href="#" onclick="closeDialog(this);showDialog(dialogTemplates.credLics)">Credits/licenses</a></center>
+        <div class="content">
+            <h2><img src="../assets/logo.svg" width="96" height="30" alt="iTetris" /></h2>
+            <br />
+            <table border="0" width="100%">
+                <tr><td><strong>Drag left</td><td>Move block left</td></tr>
+                <tr><td><strong>Drag right</td><td>Move block right</td></tr>
+                <tr><td><strong>Drag down</td><td>Move block down</td></tr>
+                <tr><td><strong>Tap</td><td>Rotate block</td></tr>
+                <tr><td><strong>Swipe down</td><td>Drop block</td></tr>
+            </table>
+            <p>To pause the game, click the logo</p>
+        </div>
+        <a href="#" class="button primary" onclick="handleNewGame(this)">New game</a>
+        <a href="#" class="button" onclick="closeDialog(this);showDialog(dialogTemplates.credLics)">Credits</a>
     </div>
 
     <div id="template-gameover">
-        <h2>Game over</h2>
-        <p>Click below for another round...</p>
+        <div class="content">
+            <h2>Game over</h2>
+            <p>Click below for another round...</p>
+        </div>
         <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
     </div>
 
     <div id="template-gamepaused">
-        <h2>Paused</h2>
-        <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+        <a href="#" class="button top" onclick="handleNewGame(this)">New game</a>
         <a href="#" class="button" onclick="closeDialog(this)">Unpause game</a>
     </div>
 
     <div id="template-credlics">
-        <h2>Credits & licenses</h2>
-        <h3>Libraries used</h3>
-        <ul>
-            <li><a href="http://underscorejs.org">Underscore.js</a></li>
-            <li><a href="http://jquery.org">jQuery</a></li>
-            <li><a href="http://eightmedia.github.io/hammer.js/">Hammer</a></li>
-            <li><a href="http://cubiq.org/add-to-home-screen">Add2Home</a></li>
-        </ul>
+        <div class="content">
+            <h2>Libraries used</h2>
+            <ul>
+                <li><a href="http://underscorejs.org">Underscore.js</a></li>
+                <li><a href="http://jquery.org">jQuery</a></li>
+                <li><a href="http://eightmedia.github.io/hammer.js/">Hammer</a></li>
+                <li><a href="http://cubiq.org/add-to-home-screen">Add2Home</a></li>
+                <li><a href="http://dribbble.com/shots/1121640-iOS-7-Colors-PS-Swatches">iOS 7 Colors</a></li>
+            </ul>
+        </div>
         <a href="#" class="button" onclick="closeDialog(this);showDialog(dialogTemplates.newGame)">Close</a>
     </div>
 </div>
