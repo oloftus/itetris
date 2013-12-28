@@ -2,7 +2,7 @@
 
 function newRandomShape()
 {
-    var shapeId = Math.floor(Math.random() * (shapes.length));
+    var shapeId = _.random(0, shapes.length - 1);
     var shape = _.extend({}, shapes[shapeId]);   
     var angle = Math.floor(Math.random() * 4) * 90;
     var rotShape = rotateShape(shape, angle);

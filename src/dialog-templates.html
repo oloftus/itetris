@@ -11,6 +11,8 @@
                 <tr><td><strong>Swipe down</td><td>Drop block</td></tr>
             </table>
             <p>To pause the game, click the logo</p>
+            <center><div class="fb-like" data-href="http://itetris.org" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div></center>
+            <br />
         </div>
         <a href="#" class="button primary" onclick="handleNewGame(this)">New game</a>
         <a href="#" class="button" onclick="closeDialog(this);showDialog(dialogTemplates.credLics)">Credits</a>
@@ -19,17 +21,27 @@
     <div id="template-gameover">
         <div class="content">
             <h2>Game over</h2>
-            <h3>Share your score with your friends!</h3>
+            <h3>Boast your score to your friends on Facebook!</h3>
+            <script type="text/javascript">
+                function shareScoreFb()
+                {
+                    var score = $(".param.rows")[0].innerHTML;
+
+                    FB.ui({
+                      method: 'feed',
+                      link: 'https://developers.facebook.com/docs/dialogs/',
+                      caption: shareCaption.replace("%%score%%", score)
+                    }, function(response){});
+                }
+            </script>
             <table border="0" width="100%">
-                <tr>
-                    <td><strong>Rows</td><td><span class="param rows" /></td>
-                    <td rowspan="3" valign="top">Share</td>
-                </tr>
+                <tr><td><strong>Rows</td><td><span class="param rows" /></td></tr>
                 <tr><td><strong>Score</td><td><span class="param score" /></td></tr>
                 <tr><td><strong>Level</td><td><span class="param level" /></td></tr>
             </table>
             <br />
         </div>
+        <a href="#" class="button" onclick="shareScoreFb()">Share score on Facebook</a>
         <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
     </div>
 

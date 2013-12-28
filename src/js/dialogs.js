@@ -50,7 +50,7 @@ function closeDialog(dialogId)
     
 function setupDialogTemplates()
 {
-    var $theTemplates = null;
+    var theTemplates = null;
     var basePath = window.location.pathname.split("/");
     var templatesPath = [_.first(basePath, basePath.length - 1).join("/"), dialogTemplatesFile].join("/");
     $.ajax(
@@ -60,15 +60,13 @@ function setupDialogTemplates()
             url: templatesPath,
             success: function(data)
             {
-                $theTemplates = data;
+                theTemplates = data;
             }
         });
 
-    $("body").append($theTemplates);
-
     _.each(dialogTemplates, function(templateName)
     {
-        $dialogTemplates[templateName] = $("#" + elementIds.dialogTemplate + "-" + templateName);
+        $dialogTemplates[templateName] = $(theTemplates).find("#" + elementIds.dialogTemplate + "-" + templateName);
     });
 }
 
