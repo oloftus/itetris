@@ -22,18 +22,6 @@
         <div class="content">
             <h2>Game over</h2>
             <h3>Boast your score to your friends on Facebook!</h3>
-            <script type="text/javascript">
-                function shareScoreFb()
-                {
-                    var score = $(".param.rows")[0].innerHTML;
-
-                    FB.ui({
-                      method: 'feed',
-                      link: 'https://developers.facebook.com/docs/dialogs/',
-                      caption: shareCaption.replace("%%score%%", score)
-                    }, function(response){});
-                }
-            </script>
             <table border="0" width="100%">
                 <tr><td><strong>Rows</td><td><span class="param rows" /></td></tr>
                 <tr><td><strong>Score</td><td><span class="param score" /></td></tr>
@@ -41,8 +29,20 @@
             </table>
             <br />
         </div>
-        <a href="#" class="button" onclick="shareScoreFb()">Share score on Facebook</a>
+        <a href="#" class="button" id="fb-share-score-button">Share score on Facebook</a>
         <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+
+        <script type="text/javascript">
+            var score = $(".param.rows")[0].innerHTML;
+            var caption = shareCaption.replace("%%score%%", score);
+            var href = "https://www.facebook.com/dialog/feed?" +
+              "app_id=1446901318865956" +
+              "&display=popup&caption=" + caption +
+              "&link=http://itetris.org"+
+              "&redirect_uri=http://itetris.org/app";
+              
+            $("#fb-share-score-button").attr("href", encodeURI(href));
+        </script>   
     </div>
 
     <div id="template-gamepaused">
