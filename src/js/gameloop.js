@@ -82,7 +82,12 @@ function doGameOver()
 {
     pauseScoreTimer();
     clearControls();
-    showDialog(dialogTemplates.gameOver, false);
+    showDialog(dialogTemplates.gameOver, false,
+        {
+            rows: currRows,
+            score: currScore,
+            level: currLevel
+        });
 }
 
 function isGameOver()

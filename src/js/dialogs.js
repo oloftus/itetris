@@ -1,6 +1,6 @@
 /**** DIALOGS ****/
 
-function showDialog(templateName, pause)
+function showDialog(templateName, pause, params)
 {
     pause = _.isUndefined(pause) ? false : pause;
 
@@ -16,6 +16,13 @@ function showDialog(templateName, pause)
     openDialogIds.push(dialogId);
 
     var $template = $dialogTemplates[templateName].clone();
+    var $placeholders = $template.find(".param");
+    _.each($placeholders, function(placeholder)
+    {
+        var paramName = $(placeholder).attr("class").split(" ")[1];
+        var paramValue = params[paramName];
+        $template.find(".param." + paramName).html(paramValue);
+    });
     var $dialog = $(
         "<div class='" + elementIds.dialog + "' id='" + elementIds.dialog + "-" + dialogId + "'>" +
             "<div class='" + elementIds.inner + "' />" +
@@ -40,7 +47,7 @@ function closeDialog(dialogId)
     openDialogIds = _.without(openDialogIds, dialogId);
     unpauseGame();
 }
-
+    
 function setupDialogTemplates()
 {
     var $theTemplates = null;

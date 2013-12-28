@@ -19,7 +19,16 @@
     <div id="template-gameover">
         <div class="content">
             <h2>Game over</h2>
-            <p>Click below for another round...</p>
+            <h3>Share your score with your friends!</h3>
+            <table border="0" width="100%">
+                <tr>
+                    <td><strong>Rows</td><td><span class="param rows" /></td>
+                    <td rowspan="3" valign="top">Share</td>
+                </tr>
+                <tr><td><strong>Score</td><td><span class="param score" /></td></tr>
+                <tr><td><strong>Level</td><td><span class="param level" /></td></tr>
+            </table>
+            <br />
         </div>
         <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
     </div>
