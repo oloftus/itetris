@@ -3,7 +3,7 @@
 var boardColour = "transparent"
 var hiddenRows = 5;
 var extentY = dimensionY + hiddenRows;
-var nextShapePadding = 10;
+var headerPadding = 10;
 var nextShapeBorderWidth = 1;
 var nextShapeDisplayDimension = 4;
 var blockSize = Math.floor(Math.min($(document).width() / dimensionX, $(document).height() / dimensionY));

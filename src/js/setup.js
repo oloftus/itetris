@@ -9,14 +9,20 @@ function clearGameBoard()
 
 function drawGameBoard()
 {
+    function calcHeaderHeight()
+    {
+        var boardHeight = dimensionY * blockSize;
+        return Math.max(Math.floor($(document).height() - (boardHeight + headerPadding)), minHeaderHeight)
+    }
+
+    var headerHeight = calcHeaderHeight();
+    var nextShapeBlockSize = Math.floor(headerHeight / nextShapeDisplayDimension);
+    var nextShapeBlockWidth = nextShapeBlockSize - (2 * nextShapeBorderWidth);
+    blockSize = Math.floor(($(document).height() - (headerHeight + headerPadding)) / dimensionY)
     var boardWidth = dimensionX * blockSize;
     var boardHeight = dimensionY * blockSize;
     var blockWidth = (blockSize - (2 * borderWidth));
-
-    var headerHeight = $(document).height() - boardHeight - nextShapePadding;
-    var nextShapeBlockSize = Math.floor(headerHeight / nextShapeDisplayDimension);
-    var nextShapeBlockWidth = nextShapeBlockSize - (2 * nextShapeBorderWidth);
-    headerHeight = nextShapeBlockSize * nextShapeDisplayDimension;
+    headerHeight = calcHeaderHeight();
 
     $gameRoot = $("#" + elementIds.gameRoot);
     $gameRoot.width(boardWidth);
