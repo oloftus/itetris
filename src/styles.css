@@ -1,9 +1,9 @@
-body{margin:0;overflow:hidden;font-size:12px;font-family:sans-serif;}
+body{margin:0;overflow:hidden;font-size:12px;font-family:sans-serif;background-color:black}
 
 h1, h2, h3, h4{font-weight:400;}
 a{text-decoration:none;color:inherit;}
 
-#itetris{margin:0 auto;min-width:260px;min-height:525px;display:none;}
+#itetris{margin:0 auto;min-width:260px;min-height:525px;display:none;background-color:white;}
 #itetris h1{margin:0;width:96px;height:100%;background:url(../assets/logo.svg) no-repeat center;background-size:96px 30px;
             text-indent:-1000em;margin-left:10px;}
 #itetris h1, #score-card{float:left;}
