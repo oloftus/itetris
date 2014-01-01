@@ -41,6 +41,5 @@ $(function()
     _.each(includeScripts, function(includeScript) {
         var scriptPath = scriptDir + "/" + includeScript;
         $.getScript(scriptPath, function() { startIfAllScriptsLoaded(); });
-        //getScript(scriptPath, function() { startIfAllScriptsLoaded(); });
     });
 });

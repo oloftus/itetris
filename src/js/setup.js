@@ -91,6 +91,8 @@ function drawGameBoard()
             block.render();
         }
     }
+
+    $gameRoot.show();
 }
 
 function teardownGame()
@@ -145,6 +147,7 @@ function initGlobals()
 
 function boot()
 {
+    setupConfigDependentGlobals();
     initGlobals();
     preventIphonePanning();
     setupDialogTemplates();

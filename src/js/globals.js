@@ -2,11 +2,15 @@
 
 var boardColour = "transparent"
 var hiddenRows = 5;
-var extentY = dimensionY + hiddenRows;
 var headerPadding = 10;
 var nextShapeBorderWidth = 1;
 var nextShapeDisplayDimension = 4;
-var blockSize = Math.floor(Math.min($(document).width() / dimensionX, $(document).height() / dimensionY));
+
+function setupConfigDependentGlobals()
+{
+    extentY = dimensionY + hiddenRows;
+    blockSize = Math.floor(Math.min($(document).width() / dimensionX, $(document).height() / dimensionY));
+}
 
 var blocked = 
 {
