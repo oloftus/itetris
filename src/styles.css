@@ -24,4 +24,4 @@ a{text-decoration:none;color:inherit;}
 .dialog h2{margin:0;text-align:center;}
 .button{font-size:1.5em;display:block;text-align:center;padding:10px 0;color:#007AFF;border-top:1px solid #aaaaaa;}
 .button.primary{font-weight:bold;}
-.button.top{background:none;}
+.button.top{background:none;border-top:none;}
