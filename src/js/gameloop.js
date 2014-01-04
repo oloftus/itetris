@@ -121,6 +121,6 @@ function gameLoop()
         completeRows();
     }
 
-    translateActiveShape(0, 1, true);
+    moveDown(true);
     gameLoopTimer = setTimeout(gameLoop, currSpeed);
 }

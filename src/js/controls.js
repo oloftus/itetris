@@ -15,9 +15,9 @@ function rotate()
     rotateActiveShape(270);
 }
 
-function moveDown()
+function moveDown(gameLoop)
 {
-    translateActiveShape(0, 1);
+    translateActiveShape(0, 1, gameLoop);
 }
 
 function drop()
