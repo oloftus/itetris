@@ -100,7 +100,7 @@ function rotateActiveShape(angle)
 
 function dropActiveShape()
 {
-    if (activeShape.currY + activeShape.height() > extentY) return;
+    if (activeShape.currY + activeShape.height() > extentY - 1) return;
 
     var currMin = extentY + 1000;
 
