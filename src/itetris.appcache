@@ -1,14 +1,11 @@
 CACHE MANIFEST
-# Version 1.3
 
 CACHE:
-
-# HTML/CSS
+# Application
 index.html
-dialog-templates.html
+mini.js
 styles.css
-
-# Assets
+dialog-templates.html
 ../assets/logo.svg
 ../assets/touch-icon-iphone.png
 
@@ -19,20 +16,6 @@ styles.css
 ../lib/jquery.hammer.js
 ../lib/add2home.js
 ../lib/add2home.css
-
-# Application
-js/main.js
-js/activeshape.js
-js/config.js
-js/controls.js
-js/dialogs.js
-js/gameloop.js
-js/globals.js
-js/main.js
-js/scoring.js
-js/setup.js
-js/shapesblocks.js
-js/util.js
 
 NETWORK:
 *
