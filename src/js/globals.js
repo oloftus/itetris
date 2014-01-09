@@ -18,7 +18,8 @@ var blocked =
     right: "right"
 }
 
-var dialogTemplates = 
+/* EXPORT */
+dialogTemplates =
 {
     newGame: "newgame",
     gameOver: "gameover",

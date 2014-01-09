@@ -1,6 +1,7 @@
 /**** DIALOGS ****/
 
-function showDialog(templateName, pause, params)
+/* EXPORT */
+showDialog = function(templateName, pause, params)
 {
     pause = _.isUndefined(pause) ? false : pause;
 
@@ -37,7 +38,8 @@ function showDialog(templateName, pause, params)
     return dialogId;
 }
 
-function closeDialog(dialogId)
+/* EXPORT */
+closeDialog = function(dialogId)
 {
     if (typeof dialogId !== "number")
         dialogId = parseInt(_.last($(dialogId).parents("." + elementIds.dialog).attr("id").split("-")), 10);
@@ -73,7 +75,8 @@ function setupDialogTemplates()
 
 /**** Event handlers *****/
 
-function handleNewGame(self)
+/* EXPORT */
+handleNewGame = function(self)
 {
     closeDialog(self);
     teardownGame();
