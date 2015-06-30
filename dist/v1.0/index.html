@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html manifest="itetris.appcache">
+<head>
+    <title>iTetris.org</title>
+
+    <script type="text/javascript">
+        var addToHomeConfig =
+        {
+            animationIn: 'bubble',
+            animationOut: 'drop',
+            lifespan:10000,
+            touchIcon:true
+        };
+    </script>
+
+    <link href="lib/add2home.css" type="text/css" rel="stylesheet" />
+    <script src="lib/jquery.js" type="text/javascript"></script>
+    <script src="lib/underscore.js" type="text/javascript"></script>
+    <script src="lib/hammer.js" type="text/javascript"></script>
+    <script src="lib/jquery.hammer.js" type="text/javascript"></script>
+    <script src="lib/add2home.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+    <link href="styles.css" type="text/css" rel="stylesheet" />
+
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="apple-touch-icon" sizes="120x120" href="touch-icon-iphone.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head> 
+
+<body>
+    <div id="itetris">
+        <div id="header">
+            <h1 id="title">iTetris.org</h1>
+        </div>
+    </div>
+</body>
+</html>

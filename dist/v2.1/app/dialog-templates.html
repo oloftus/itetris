@@ -1,0 +1,66 @@
+<div id="dialog-templates">
+    <div id="template-newgame">
+        <div class="content">
+            <h2><img src="../assets/logo.svg" width="96" height="30" alt="iTetris" /></h2>
+            <br />
+            <table border="0" width="100%">
+                <tr><td><strong>Drag left</td><td>Move block left</td></tr>
+                <tr><td><strong>Drag right</td><td>Move block right</td></tr>
+                <tr><td><strong>Drag down</td><td>Move block down</td></tr>
+                <tr><td><strong>Tap</td><td>Rotate block</td></tr>
+                <tr><td><strong>Swipe down</td><td>Drop block</td></tr>
+            </table>
+            <p>To pause the game, click the logo</p>
+            <center><div class="fb-like" data-href="http://itetris.org" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div></center>
+            <br />
+        </div>
+        <a href="#" class="button primary" onclick="handleNewGame(this)">New game</a>
+        <a href="#" class="button" onclick="closeDialog(this);showDialog(dialogTemplates.credLics)">Credits</a>
+    </div>
+
+    <div id="template-gameover">
+        <div class="content">
+            <h2>Game over</h2>
+            <h3>Boast your score to your friends on Facebook!</h3>
+            <table border="0" width="100%">
+                <tr><td><strong>Rows</td><td><span class="param rows" /></td></tr>
+                <tr><td><strong>Score</td><td><span class="param score" /></td></tr>
+                <tr><td><strong>Level</td><td><span class="param level" /></td></tr>
+            </table>
+            <br />
+        </div>
+        <a href="#" class="button" id="fb-share-score-button">Share score on Facebook</a>
+        <a href="#" class="button" onclick="handleNewGame(this)">New game</a>
+
+        <script type="text/javascript">
+            var score = $(".param.rows")[0].innerHTML;
+            var caption = shareCaption.replace("%%score%%", score);
+            var href = "https://www.facebook.com/dialog/feed?" +
+              "app_id=1446901318865956" +
+              "&display=popup&caption=" + caption +
+              "&link=http://itetris.org"+
+              "&redirect_uri=http://itetris.org/app";
+              
+            $("#fb-share-score-button").attr("href", encodeURI(href));
+        </script>   
+    </div>
+
+    <div id="template-gamepaused">
+        <a href="#" class="button top" onclick="handleNewGame(this)">New game</a>
+        <a href="#" class="button" onclick="closeDialog(this)">Unpause game</a>
+    </div>
+
+    <div id="template-credlics">
+        <div class="content">
+            <h2>Libraries used</h2>
+            <ul>
+                <li><a href="http://underscorejs.org">Underscore.js</a></li>
+                <li><a href="http://jquery.org">jQuery</a></li>
+                <li><a href="http://eightmedia.github.io/hammer.js/">Hammer</a></li>
+                <li><a href="http://cubiq.org/add-to-home-screen">Add2Home</a></li>
+                <li><a href="http://dribbble.com/shots/1121640-iOS-7-Colors-PS-Swatches">iOS 7 Colors</a></li>
+            </ul>
+        </div>
+        <a href="#" class="button" onclick="closeDialog(this);showDialog(dialogTemplates.newGame)">Close</a>
+    </div>
+</div>

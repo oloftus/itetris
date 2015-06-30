@@ -1,0 +1,21 @@
+CACHE MANIFEST
+
+CACHE:
+# Application
+index.html
+mini.js
+styles.css
+dialog-templates.html
+../assets/logo.svg
+../assets/touch-icon-iphone.png
+
+# Libraries
+../lib/jquery.js
+../lib/underscore.js
+../lib/hammer.js
+../lib/jquery.hammer.js
+../lib/add2home.js
+../lib/add2home.css
+
+NETWORK:
+*

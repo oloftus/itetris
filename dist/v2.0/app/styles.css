@@ -1,0 +1,35 @@
+body{margin:0;overflow:hidden;font-size:12px;font-family:sans-serif;}
+
+h1, h2, h3, h4{font-weight:400;}
+a{text-decoration:none;color:inherit;}
+
+#itetris{margin:0 auto;min-width:260px;min-height:525px;}
+#itetris h1{margin:0;width:96px;height:100%;background:url(../assets/logo.svg) no-repeat center;background-size:96px 30px;
+            text-indent:-1000em;margin-left:10px;}
+#itetris h1, #score-card{float:left;}
+#header{padding:5px 0; /* https://excellenteasy.com/devblog/posts/how-to-target-physical-pixels-on-retina-screens-with-css/ */
+    background-image: linear-gradient(0deg, #aaaaaa, #aaaaaa, transparent 50%);
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: bottom;}
+#score-card{margin-left:20px;}
+#score-card td:first-child{font-weight:bold;}
+#score-card td{line-height:90%;}
+#next-shape{float:right;}
+#game-board{clear:both;}
+.block{float:left;}
+
+#dialog-templates{display:none;}
+.dialog-overlay, .dialog{position:absolute;top:0;}
+.dialog-overlay{width:100%;height:100%;z-index:1000;background-color:black;opacity:0.8;}
+.dialog{margin-top:70px;z-index:1001;width:100%;opacity:0.9;}
+.dialog .inner{margin:0 auto;width:80%;max-width:400px;background-color:white;border-radius:5px;}
+.dialog .content{padding:15px 20px 5px;}
+.dialog h2{margin:0;text-align:center;}
+.button{font-size:1.5em;display:block;text-align:center;padding:10px 0;color:#007AFF;
+    background-image: linear-gradient(0deg, #aaaaaa, #aaaaaa, transparent 50%);
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: top;}
+.button.primary{font-weight:bold;}
+.button.top{background:none;}
